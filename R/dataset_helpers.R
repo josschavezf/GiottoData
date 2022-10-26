@@ -21,7 +21,7 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen'),
   if(dataset == 'visium') {
 
     # 1. load giotto object
-    mini_gobject = readRDS(system.file("/Mini_datasets/Visium/gobject_mini_visium.RDS", package = 'Giotto'))
+    mini_gobject = readRDS(system.file("/Mini_datasets/Visium/gobject_mini_visium.RDS", package = 'GiottoData'))
 
     # 2. add image back
     image_path = system.file("/Mini_datasets/Visium/images/deg_image.png", package = 'Giotto')
@@ -39,20 +39,20 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen'),
   if(dataset == 'vizgen') {
 
     # 1. load giotto object
-    mini_gobject = readRDS(system.file("/Mini_datasets/Vizgen/gobject_mini_vizgen.RDS", package = 'Giotto'))
+    mini_gobject = readRDS(system.file("/Mini_datasets/Vizgen/gobject_mini_vizgen.RDS", package = 'GiottoData'))
 
     # 2. add spatvectors back in place (giottoPoints and giottoPolygons)
-    rna_spatVector = terra::vect(system.file("/Mini_datasets/Vizgen/processed_data/rna_spatVector.shp", package = 'Giotto'))
+    rna_spatVector = terra::vect(system.file("/Mini_datasets/Vizgen/processed_data/rna_spatVector.shp", package = 'GiottoData'))
     mini_gobject@feat_info$rna@spatVector = rna_spatVector
 
-    z0_spatVector = terra::vect(system.file("/Mini_datasets/Vizgen/processed_data/z0_spatVector.shp", package = 'Giotto'))
+    z0_spatVector = terra::vect(system.file("/Mini_datasets/Vizgen/processed_data/z0_spatVector.shp", package = 'GiottoData'))
     mini_gobject@spatial_info$z0@spatVector = z0_spatVector
-    z0_spatVectorCentroids = terra::vect(system.file("/Mini_datasets/Vizgen/processed_data/z0_spatVectorCentroids.shp", package = 'Giotto'))
+    z0_spatVectorCentroids = terra::vect(system.file("/Mini_datasets/Vizgen/processed_data/z0_spatVectorCentroids.shp", package = 'GiottoData'))
     mini_gobject@spatial_info$z0@spatVectorCentroids = z0_spatVectorCentroids
 
-    z1_spatVector = terra::vect(system.file("/Mini_datasets/Vizgen/processed_data/z1_spatVector.shp", package = 'Giotto'))
+    z1_spatVector = terra::vect(system.file("/Mini_datasets/Vizgen/processed_data/z1_spatVector.shp", package = 'GiottoData'))
     mini_gobject@spatial_info$z1@spatVector = z1_spatVector
-    z1_spatVectorCentroids = terra::vect(system.file("/Mini_datasets/Vizgen/processed_data/z1_spatVectorCentroids.shp", package = 'Giotto'))
+    z1_spatVectorCentroids = terra::vect(system.file("/Mini_datasets/Vizgen/processed_data/z1_spatVectorCentroids.shp", package = 'GiottoData'))
     mini_gobject@spatial_info$z1@spatVectorCentroids = z1_spatVectorCentroids
 
 
@@ -63,10 +63,10 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen'),
     ultra_mini_extent = terra::ext(c(6400.029, 6900.037, -5150.007, -4699.967 ))
 
     # location
-    DAPI_z0_image_path = system.file("/Mini_datasets/Vizgen/images/mini_dataset_dapi_z0.jpg", package = 'Giotto')
-    DAPI_z1_image_path = system.file("/Mini_datasets/Vizgen/images/mini_dataset_dapi_z1.jpg", package = 'Giotto')
-    polyT_z0_image_path = system.file("/Mini_datasets/Vizgen/images/mini_dataset_polyT_z0.jpg", package = 'Giotto')
-    polyT_z1_image_path = system.file("/Mini_datasets/Vizgen/images/mini_dataset_polyT_z1.jpg", package = 'Giotto')
+    DAPI_z0_image_path = system.file("/Mini_datasets/Vizgen/images/mini_dataset_dapi_z0.jpg", package = 'GiottoData')
+    DAPI_z1_image_path = system.file("/Mini_datasets/Vizgen/images/mini_dataset_dapi_z1.jpg", package = 'GiottoData')
+    polyT_z0_image_path = system.file("/Mini_datasets/Vizgen/images/mini_dataset_polyT_z0.jpg", package = 'GiottoData')
+    polyT_z1_image_path = system.file("/Mini_datasets/Vizgen/images/mini_dataset_polyT_z1.jpg", package = 'GiottoData')
 
     # create image list
     image_paths = c(DAPI_z0_image_path, DAPI_z1_image_path,
