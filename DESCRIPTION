@@ -20,3 +20,4 @@ Imports:
     base (>= 3.5.0),
     utils (>= 3.5.0),
     Giotto (>= 2.0.0)
+RoxygenNote: 7.1.1
