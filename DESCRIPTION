@@ -7,9 +7,8 @@ Author: c(
 		 role = c("aut", "cre"))
 		 )
 Maintainer: Ruben Dries <rubendries@gmail.com>
-Description: Stores information and scripts to work with, or load 
-various different spatial datasets that can be used with the Giotto
-Suite workflow.
+Description: Stores information and scripts to work with, or load various
+    different spatial datasets that can be used with the Giotto Suite workflow.
 License: MIT
 Encoding: UTF-8
 LazyData: true
