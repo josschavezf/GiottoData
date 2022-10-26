@@ -9,3 +9,17 @@ output: github_document
 # GiottoData
 
 Repo for GiottoData
+
+### Installation
+
+```{r, eval = FALSE}
+remotes::install_github("drieslab/GiottoData")
+```
+
+### Usage
+```{r, eval = FALSE}
+library(Giotto)
+library(GiottoData)
+```
+
+
