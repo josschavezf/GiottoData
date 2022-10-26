@@ -1,0 +1,15 @@
+Package: GiottoData
+Type: Package
+Title: Datasets for Giotto
+Version: 0.1.0
+Author: c(
+	person("Ruben", "Dries", email = "rubendries@gmail.com",
+		 role = c("aut", "cre"))
+		 )
+Maintainer: Ruben Dries <rubendries@gmail.com>
+Description: Stores information and scripts to work with, or load 
+various different spatial datasets that can be used with the Giotto
+Suite workflow.
+License: MIT
+Encoding: UTF-8
+LazyData: true
