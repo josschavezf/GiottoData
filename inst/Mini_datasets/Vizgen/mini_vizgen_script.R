@@ -5,6 +5,7 @@
 devtools::load_all() #library(GiottoData)
 library(data.table)
 
+#remotes::install_github("RubD/Giotto@suite", force = TRUE)
 #remotes::install_github("drieslab/Giotto@suite")
 library(Giotto)
 
@@ -295,51 +296,46 @@ spatInSituPlotPoints(vizsubc,
 
 format(object.size(vizsubc), units = 'Mb')
 
-saveGiotto(vizsubc, foldername = 'VizgenObject', dir = paste0(system.file(package = 'GiottoData'),'/', 'Mini_datasets/Vizgen/'))
+saveGiotto(vizsubc,
+           foldername = 'VizgenObject',
+           dir = paste0(system.file(package = 'GiottoData'),'/', 'Mini_datasets/Vizgen/'),
+           overwrite = TRUE)
 
-vizsubc@spatial_info$z0
+gvizg = loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'))
 
-#saveRDS(vizsubc, file = paste0(data_path, '/', 'gobject_mini_vizgen.RDS'))
+# quick test for subsetting
+selected_ids = pDataDT(gvizg)$cell_ID[1:100]
+mySubset <- Giotto::subsetGiotto(gobject = gvizg, cell_ids = selected_ids)
 
+spatInSituPlotPoints(gvizg,
+                     show_image = T,
+                     largeImage_name = 'dapi_z0',
+                     feats = list('rna' = c("Htr1b", "Ackr1", "Epha7")),
+                     feats_color_code = c("Htr1b" = 'green', 'Ackr1' = 'blue', 'Epha7' = 'red'),
+                     point_size = 0.35,
+                     show_polygon = TRUE,
+                     polygon_feat_type = 'z1',
+                     polygon_color = 'white',
+                     polygon_line_size = 0.1,
+                     polygon_fill = 'leiden_clus',
+                     polygon_fill_as_factor = T,
+                     coord_fix_ratio = TRUE)
 
 # write terra files (spatvectors)
 # these need to be read in again when loading the vizgen giotto object
-terra::writeVector(vizsubc@feat_info$rna@spatVector, filename = paste0(data_path, '/', 'processed_data/rna_spatVector.shp'))
+#terra::writeVector(vizsubc@feat_info$rna@spatVector, filename = paste0(data_path, '/', 'processed_data/rna_spatVector.shp'))
 
-terra::writeVector(vizsubc@spatial_info$z0@spatVector, filename = paste0(data_path, '/', 'processed_data/z0_spatVector.shp'))
-terra::writeVector(vizsubc@spatial_info$z0@spatVectorCentroids, filename = paste0(data_path, '/', 'processed_data/z0_spatVectorCentroids.shp'))
-terra::writeVector(vizsubc@spatial_info$z0@overlaps, filename = paste0(data_path, '/', 'processed_data/z0_spatVectorOverlaps.shp'))
+#terra::writeVector(vizsubc@spatial_info$z0@spatVector, filename = paste0(data_path, '/', 'processed_data/z0_spatVector.shp'))
+#terra::writeVector(vizsubc@spatial_info$z0@spatVectorCentroids, filename = paste0(data_path, '/', 'processed_data/z0_spatVectorCentroids.shp'))
+#terra::writeVector(vizsubc@spatial_info$z0@overlaps, filename = paste0(data_path, '/', 'processed_data/z0_spatVectorOverlaps.shp'))
 
-terra::writeVector(vizsubc@spatial_info$z1@spatVector, filename = paste0(data_path, '/', 'processed_data/z1_spatVector.shp'))
-terra::writeVector(vizsubc@spatial_info$z1@spatVectorCentroids, filename = paste0(data_path, '/', 'processed_data/z1_spatVectorCentroids.shp'))
-terra::writeVector(vizsubc@spatial_info$z1@overlaps, filename = paste0(data_path, '/', 'processed_data/z1_spatVectorOverlaps.shp'))
-
-#vizsubc@spatial_info$z0@overlaps[['rna']]
-
-#hop = paste0('rna', '_', 'z0', '_spatInfo_spatVectorOverlaps.shp')
-
-#spat_names = gsub(hop, pattern = '_spatInfo_spatVectorOverlaps.shp', replacement = '')
-
-#strsplit(spat_names, split = '_')[[1]][1]
-#strsplit(spat_names, split = '_')[[1]][2]
-
-# change name to fix error
-
-
-# set pointers to NULL to fix potential error
-#vizsubc@feat_info$rna@spatVector = 1
-
-#vizsubc@spatial_info$z0@spatVector = 1
-#vizsubc@spatial_info$z0@spatVectorCentroids = 1
-
-#vizsubc@spatial_info$z1@spatVector = 1
-#vizsubc@spatial_info$z1@spatVectorCentroids = 1
-
-#vizsubc@largeImages = NULL
+#terra::writeVector(vizsubc@spatial_info$z1@spatVector, filename = paste0(data_path, '/', 'processed_data/z1_spatVector.shp'))
+#terra::writeVector(vizsubc@spatial_info$z1@spatVectorCentroids, filename = paste0(data_path, '/', 'processed_data/z1_spatVectorCentroids.shp'))
+#terra::writeVector(vizsubc@spatial_info$z1@overlaps, filename = paste0(data_path, '/', 'processed_data/z1_spatVectorOverlaps.shp'))
 
 # save object and copy object to Giotto/data folder
-gobject_mini_vizgen = vizsubc
-saveRDS(gobject_mini_vizgen, file = paste0(data_path, '/', 'gobject_mini_vizgen.RDS'))
+#gobject_mini_vizgen = vizsubc
+#saveRDS(gobject_mini_vizgen, file = paste0(data_path, '/', 'gobject_mini_vizgen.RDS'))
 
 
 
