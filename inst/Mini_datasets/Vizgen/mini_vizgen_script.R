@@ -2,10 +2,9 @@
 ## MINI VIZGEN script and dataset preparation ##
 
 
-devtools::load_all() #library(GiottoData)
+library(GiottoData) # devtools::load_all()
 library(data.table)
 
-#remotes::install_github("RubD/Giotto@suite", force = TRUE)
 #remotes::install_github("drieslab/Giotto@suite")
 library(Giotto)
 
@@ -301,9 +300,12 @@ saveGiotto(vizsubc,
            dir = paste0(system.file(package = 'GiottoData'),'/', 'Mini_datasets/Vizgen/'),
            overwrite = TRUE)
 
+
+
+## some quick tests ##
 gvizg = loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'))
 
-# quick test for subsetting
+# subsetting
 selected_ids = pDataDT(gvizg)$cell_ID[1:100]
 mySubset <- Giotto::subsetGiotto(gobject = gvizg, cell_ids = selected_ids)
 
@@ -320,22 +322,6 @@ spatInSituPlotPoints(gvizg,
                      polygon_fill = 'leiden_clus',
                      polygon_fill_as_factor = T,
                      coord_fix_ratio = TRUE)
-
-# write terra files (spatvectors)
-# these need to be read in again when loading the vizgen giotto object
-#terra::writeVector(vizsubc@feat_info$rna@spatVector, filename = paste0(data_path, '/', 'processed_data/rna_spatVector.shp'))
-
-#terra::writeVector(vizsubc@spatial_info$z0@spatVector, filename = paste0(data_path, '/', 'processed_data/z0_spatVector.shp'))
-#terra::writeVector(vizsubc@spatial_info$z0@spatVectorCentroids, filename = paste0(data_path, '/', 'processed_data/z0_spatVectorCentroids.shp'))
-#terra::writeVector(vizsubc@spatial_info$z0@overlaps, filename = paste0(data_path, '/', 'processed_data/z0_spatVectorOverlaps.shp'))
-
-#terra::writeVector(vizsubc@spatial_info$z1@spatVector, filename = paste0(data_path, '/', 'processed_data/z1_spatVector.shp'))
-#terra::writeVector(vizsubc@spatial_info$z1@spatVectorCentroids, filename = paste0(data_path, '/', 'processed_data/z1_spatVectorCentroids.shp'))
-#terra::writeVector(vizsubc@spatial_info$z1@overlaps, filename = paste0(data_path, '/', 'processed_data/z1_spatVectorOverlaps.shp'))
-
-# save object and copy object to Giotto/data folder
-#gobject_mini_vizgen = vizsubc
-#saveRDS(gobject_mini_vizgen, file = paste0(data_path, '/', 'gobject_mini_vizgen.RDS'))
 
 
 
