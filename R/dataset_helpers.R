@@ -27,10 +27,10 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen'),
     image_path = system.file("/Mini_datasets/Visium/images/deg_image.png", package = 'Giotto')
     spatlocsDT = Giotto::get_spatial_locations(mini_gobject)
     mini_extent = terra::ext(c(range(spatlocsDT$sdimx), range(spatlocsDT$sdimy)))
-    imagelist = createGiottoLargeImageList(raster_objects = image_path,
+    imagelist = Giotto::createGiottoLargeImageList(raster_objects = image_path,
                                                    names = 'image',
                                                    extent = mini_extent)
-    mini_gobject = addGiottoImage(gobject = mini_gobject,
+    mini_gobject = Giotto::addGiottoImage(gobject = mini_gobject,
                                           largeImages = imagelist)
 
   }
@@ -39,7 +39,7 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen'),
   if(dataset == 'vizgen') {
 
 
-    mini_gobject = loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'),
+    mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'),
                               python_path = python_path)
 
 
@@ -91,11 +91,11 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen'),
 
 
   if(dataset == 'seqfish') {
-    wrap_msg('To be implemented \n')
+    Giotto:::wrap_msg('To be implemented \n')
   }
 
   if(dataset == 'starmap') {
-    wrap_msg('To be implemented \n')
+    Giotto:::wrap_msg('To be implemented \n')
   }
 
 
@@ -166,7 +166,7 @@ getSpatialDataset = function(dataset = c('ST_OB1',
   }
 
   datasets_file = system.file("extdata", "datasets.txt", package = 'GiottoData')
-  datasets_file = data.table::fread(datasets_file)
+  datasets_file = data.table::fread(datasets_file, sep = "\t")
 
 
 
