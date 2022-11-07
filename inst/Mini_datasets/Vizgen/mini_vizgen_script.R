@@ -2,8 +2,11 @@
 ## MINI VIZGEN script and dataset preparation ##
 
 
-devtools::load_all() #library(Giotto)
+library(GiottoData) # devtools::load_all()
 library(data.table)
+
+#remotes::install_github("drieslab/Giotto@suite")
+library(Giotto)
 
 # 0. preparation ####
 # ----------------- #
@@ -15,7 +18,7 @@ instrs = createGiottoInstructions(save_dir = tempdir(),
                                   return_plot = FALSE)
 
 ## provide path to vizgen folder
-data_path = system.file('/Mini_datasets/Vizgen/', package = 'Giotto')
+data_path = system.file('/Mini_datasets/Vizgen/Raw/', package = 'GiottoData')
 
 ## 0.1 path to images ####
 # ---------------------- #
@@ -60,7 +63,7 @@ z1_polygons = createGiottoPolygonsFromDfr(name = 'z1',
 # 1. create subcellular dataset with transcript and polygon information ####
 # ------------------------------------------------------------------------ #
 vizsubc = createGiottoObjectSubcellular(gpoints = list('rna' = tx_dt[,.(global_x, -global_y, gene, global_z)]),
-                                        gpolygons = list(z0_polygons, z1_polygons),
+                                        gpolygons = list('z0' = z0_polygons, 'z1' = z1_polygons),
                                         instructions = instrs)
 showGiottoFeatInfo(vizsubc)
 showGiottoSpatialInfo(vizsubc)
@@ -292,37 +295,33 @@ spatInSituPlotPoints(vizsubc,
 
 format(object.size(vizsubc), units = 'Mb')
 
-#saveRDS(vizsubc, file = paste0(data_path, '/', 'gobject_mini_vizgen.RDS'))
+saveGiotto(vizsubc,
+           foldername = 'VizgenObject',
+           dir = paste0(system.file(package = 'GiottoData'),'/', 'Mini_datasets/Vizgen/'),
+           overwrite = TRUE)
 
 
-# write terra files (spatvectors)
-# these need to be read in again when loading the vizgen giotto object
-terra::writeVector(vizsubc@feat_info$rna@spatVector, filename = paste0(data_path, '/', 'processed_data/rna_spatVector.shp'))
 
-terra::writeVector(vizsubc@spatial_info$z0@spatVector, filename = paste0(data_path, '/', 'processed_data/z0_spatVector.shp'))
-terra::writeVector(vizsubc@spatial_info$z0@spatVectorCentroids, filename = paste0(data_path, '/', 'processed_data/z0_spatVectorCentroids.shp'))
+## some quick tests ##
+gvizg = loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'))
 
-terra::writeVector(vizsubc@spatial_info$z1@spatVector, filename = paste0(data_path, '/', 'processed_data/z1_spatVector.shp'))
-terra::writeVector(vizsubc@spatial_info$z1@spatVectorCentroids, filename = paste0(data_path, '/', 'processed_data/z1_spatVectorCentroids.shp'))
+# subsetting
+selected_ids = pDataDT(gvizg)$cell_ID[1:100]
+mySubset <- Giotto::subsetGiotto(gobject = gvizg, cell_ids = selected_ids)
 
-
-# change name to fix error
-
-
-# set pointers to NULL to fix potential error
-#vizsubc@feat_info$rna@spatVector = 1
-
-#vizsubc@spatial_info$z0@spatVector = 1
-#vizsubc@spatial_info$z0@spatVectorCentroids = 1
-
-#vizsubc@spatial_info$z1@spatVector = 1
-#vizsubc@spatial_info$z1@spatVectorCentroids = 1
-
-#vizsubc@largeImages = NULL
-
-# save object and copy object to Giotto/data folder
-gobject_mini_vizgen = vizsubc
-saveRDS(gobject_mini_vizgen, file = paste0(data_path, '/', 'gobject_mini_vizgen.RDS'))
+spatInSituPlotPoints(gvizg,
+                     show_image = T,
+                     largeImage_name = 'dapi_z0',
+                     feats = list('rna' = c("Htr1b", "Ackr1", "Epha7")),
+                     feats_color_code = c("Htr1b" = 'green', 'Ackr1' = 'blue', 'Epha7' = 'red'),
+                     point_size = 0.35,
+                     show_polygon = TRUE,
+                     polygon_feat_type = 'z1',
+                     polygon_color = 'white',
+                     polygon_line_size = 0.1,
+                     polygon_fill = 'leiden_clus',
+                     polygon_fill_as_factor = T,
+                     coord_fix_ratio = TRUE)
 
 
 
