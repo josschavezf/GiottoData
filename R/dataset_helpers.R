@@ -25,7 +25,7 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen'),
 
     # 2. add image back
     image_path = system.file("/Mini_datasets/Visium/images/deg_image.png", package = 'Giotto')
-    spatlocsDT = Giotto:::get_spatial_locations(mini_gobject)
+    spatlocsDT = Giotto::get_spatial_locations(mini_gobject)
     mini_extent = terra::ext(c(range(spatlocsDT$sdimx), range(spatlocsDT$sdimy)))
     imagelist = Giotto::createGiottoLargeImageList(raster_objects = image_path,
                                                    names = 'image',
@@ -101,7 +101,7 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen'),
 
   # 1. change default instructions
   identified_python_path = Giotto:::set_giotto_python_path(python_path = python_path)
-  mini_gobject = changeGiottoInstructions(gobject = mini_gobject,
+  mini_gobject = Giotto::changeGiottoInstructions(gobject = mini_gobject,
                                           params = c('python_path', 'show_plot', 'return_plot', 'save_plot', 'save_dir'),
                                           new_values = c(identified_python_path, TRUE, FALSE, FALSE, NA))
 
