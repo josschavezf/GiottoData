@@ -7,8 +7,10 @@
 getSpatialDataset(
   dataset = c("ST_OB1", "ST_OB2", "codex_spleen", "cycif_PDAC", "starmap_3D_cortex",
     "osmfish_SS_cortex", "merfish_preoptic", "mini_seqFISH", "seqfish_SS_cortex",
-    "seqfish_OB", "slideseq_cerebellum", "Human_PCa_scRNAseq", "Mouse_brain_scRNAseq"),
+    "seqfish_OB", "slideseq_cerebellum", "ST_SCC", "scRNA_prostate", "scRNA_mouse_brain"),
   directory = getwd(),
+  verbose = TRUE,
+  dryrun = FALSE,
   ...
 )
 }
@@ -16,6 +18,10 @@ getSpatialDataset(
 \item{dataset}{dataset to download}
 
 \item{directory}{directory to save the data to}
+
+\item{verbose}{verbosity}
+
+\item{dryrun}{dryrun: does not download data but shows download commands}
 
 \item{\dots}{additional parameters to \code{\link[utils]{download.file}}}
 }
