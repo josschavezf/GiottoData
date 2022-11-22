@@ -152,7 +152,7 @@ getSpatialDataset = function(dataset = c('ST_OB1',
   #  print('wget was found, start downloading datasets: \n')
   #}
 
-
+  browser()
   selection = datasets_file[['dataset']] == sel_dataset
   selected_dataset_info = datasets_file[selection,]
   if(verbose) {
@@ -205,7 +205,7 @@ getSpatialDataset = function(dataset = c('ST_OB1',
 
     spatial_locs_url = unlist(strsplit(spatial_locs_url, split = '\\|'))
 
-    for(url in expr_matrix_url) {
+    for(url in spatial_locs_url) {
       myfilename = basename(url)
       mydestfile = paste0(directory,'/', myfilename)
 
