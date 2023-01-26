@@ -15,7 +15,7 @@ loadSubObjectMini = function(x, idx = 1L) {
   load_data = readRDS(file = data_path)
 
   # wrapped objects
-  if(x %in% c('giottoPoins', 'giottoPolygon')) {
+  if(x %in% c('giottoPoints', 'giottoPolygon')) {
     load_data = Giotto::unwrap(load_data)
   }
 

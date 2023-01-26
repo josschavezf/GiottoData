@@ -22,4 +22,4 @@ Imports:
     Giotto (>= 2.0.0),
     data.table (>= 1.14.0),
     terra (>= 1.6.0)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3

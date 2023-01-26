@@ -8,4 +8,3 @@ gDataDir = function() {
   system.file(package = 'GiottoData')
 }
 
-
