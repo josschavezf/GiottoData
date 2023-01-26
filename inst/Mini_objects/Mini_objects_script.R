@@ -44,11 +44,13 @@ mg_enr = get_spatial_enrichment(gobject = viz,
                                 spat_unit = 'aggregate',
                                 output = 'spatEnrObj')
 
-gpoly = get_polygon_info(gobject = viz,
-                         polygon_name = 'aggregate',
-                         return_giottoPolygon = TRUE)
-
-gpoints = viz@feat_info$rna
+# # Do not replace these until the naming length issue is resolved
+# # (Issue where feat_ID_uniq -> feat_ID_un after loadGiotto)
+# gpoly = get_polygon_info(gobject = viz,
+#                          polygon_name = 'aggregate',
+#                          return_giottoPolygon = TRUE)
+#
+# gpoints = viz@feat_info$rna
 
 cm = Giotto:::get_cell_metadata(gobject = viz,
                                 spat_unit = 'aggregate',
@@ -131,13 +133,13 @@ saveRDS(nn, file = paste0(miniobj_path, '/', 'nnNetObj/viz_agg_sNN.RDS'))
 saveRDS(dim_red_pca, file = paste0(miniobj_path, '/', 'dimObj/viz_agg_pca.RDS'))
 saveRDS(dim_red_umap, file = paste0(miniobj_path, '/', 'dimObj/viz_agg_umap.RDS'))
 
-# giottoPoints
-gpoints = Giotto::wrap(gpoints)
-saveRDS(gpoints, file = paste0(miniobj_path, '/', 'giottoPoints/viz_agg_gpoints.RDS'))
+# giottoPoints - do not replace until feat_ID_uniq issue is resolved
+# gpoints = Giotto::wrap(gpoints)
+# saveRDS(gpoints, file = paste0(miniobj_path, '/', 'giottoPoints/viz_agg_gpoints.RDS'))
 
-# giottoPolygon
-gpoly = Giotto::wrap(gpoly)
-saveRDS(gpoly, file = paste0(miniobj_path, '/', 'giottoPolygon/viz_agg_gpoly.RDS'))
+# giottoPolygon - do not replace until feat_ID_uniq issue is resolved
+# gpoly = Giotto::wrap(gpoly)
+# saveRDS(gpoly, file = paste0(miniobj_path, '/', 'giottoPolygon/viz_agg_gpoly.RDS'))
 
 # largeImages
 saveRDS(imagelist[[1]], file = paste0(miniobj_path, '/', 'giottoLargeImage/viz_dapi_z0.RDS'))

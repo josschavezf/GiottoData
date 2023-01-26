@@ -54,8 +54,10 @@ listSubObjectMini = function(x = NULL) {
   avail_obj_dt_show = copy(avail_obj_dt)[, path := NULL]
   data.table::setcolorder(avail_obj_dt_show, neworder = c('type', 'index', 'file'))
 
+  avail_obj_dt_show = data.table::copy(avail_obj_dt_show)
+
   if(is.null(x)) return(avail_obj_dt_show)
-  else return(avail_obj_dt_show[type == x,])
+  else return((avail_obj_dt_show[type == x,]))
 
 }
 
