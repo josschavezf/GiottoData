@@ -5,7 +5,7 @@
 library(GiottoData) # devtools::load_all()
 library(data.table)
 
-#remotes::install_github("drieslab/Giotto@S4_provenance")
+#remotes::install_github("drieslab/Giotto@suite_dev")
 library(Giotto)
 
 # 0. preparation ####
@@ -320,7 +320,16 @@ spatInSituPlotPoints(vizsubc,
 
 # 9. spatial network ####
 # --------------------- #
+# defaults to delaunay
 vizsubc = createSpatialNetwork(vizsubc, spat_unit = 'aggregate')
+# kNN with k of 8 nearest
+vizsubc = createSpatialNetwork(vizsubc, spat_unit = 'aggregate', method = 'kNN', k = 8)
+# create spatial weight matrix
+vizsubc = Giotto::createSpatialWeightMatrix(vizsubc,
+                                            spat_unit = 'aggregate',
+                                            method = 'distance',
+                                            spatial_network_to_use = 'kNN_network',
+                                            return_gobject = TRUE)
 
 pDataDT(vizsubc, 'aggregate')
 spatPlot(gobject = vizsubc, spat_unit = 'aggregate', show_network = T,
