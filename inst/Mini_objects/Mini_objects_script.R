@@ -29,6 +29,11 @@ del_net = get_spatialNetwork(gobject = viz,
                              output = 'spatialNetworkObj',
                              name = 'Delaunay_network')
 
+knn_net = get_spatialNetwork(gobject = viz,
+                             spat_unit = 'aggregate',
+                             output = 'spatialNetworkObj',
+                             name = 'kNN_network')
+
 expr_vals_raw = get_expression_values(gobject = viz,
                                       spat_unit = 'aggregate',
                                       values = 'raw',
@@ -122,6 +127,7 @@ saveRDS(spat_locs, file = paste0(miniobj_path, '/', 'spatLocsObj/viz_agg_spatloc
 
 # spatial network
 saveRDS(del_net, file = paste0(miniobj_path, '/', 'spatialNetworkObj/viz_agg_spatnet_del.RDS'))
+saveRDS(knn_net, file = paste0(miniobj_path, '/', 'spatialNetworkObj/viz_agg_spatnet_knn.RDS'))
 
 # spatial enrichment
 saveRDS(mg_enr, file = paste0(miniobj_path, '/', 'spatEnrObj/viz_agg_metagene.RDS'))
