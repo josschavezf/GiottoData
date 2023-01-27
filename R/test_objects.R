@@ -16,7 +16,7 @@ loadSubObjectMini = function(x, idx = 1L) {
 
   # wrapped objects
   if(x %in% c('giottoPoints', 'giottoPolygon')) {
-    load_data = Giotto::unwrap(load_data)
+    load_data = Giotto::vect(load_data)
   }
 
   if(x == 'giottoLargeImage') {
