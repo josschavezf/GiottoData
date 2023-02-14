@@ -1,7 +1,12 @@
 ## MINI VISIUM script and dataset preparation ##
 
 
-devtools::load_all() #library(Giotto)
+#remotes::install_github("drieslab/Giotto@suite_dev")
+library(Giotto)
+
+#remotes::install_github("drieslab/GiottoData")
+library(GiottoData) # devtools::load_all()
+
 library(data.table)
 
 # 0. preparation ####
@@ -14,7 +19,7 @@ instrs = createGiottoInstructions(save_dir = tempdir(),
                                   return_plot = FALSE)
 
 ## provide path to vizgen folder
-data_path = system.file('/Mini_datasets/Visium/', package = 'Giotto')
+data_path = system.file('/Mini_datasets/Visium/Raw/', package = 'GiottoData')
 
 ## 0.1 path to images ####
 # ---------------------- #
@@ -38,33 +43,31 @@ mini_visium <- createGiottoObject(expression = expr_path,
 showGiottoSpatLocs(mini_visium)
 showGiottoExpression(mini_visium)
 
-# 2. add image ####
-# --------------- #
+## 1.1. add image ####
+# ------------------ #
 
-spatlocsDT = get_spatial_locations(mini_visium)
-
+spatlocsDT = getSpatialLocations(mini_visium)
 mini_extent = terra::ext(c(range(spatlocsDT$sdimx), range(spatlocsDT$sdimy)))
-
 imagelist = createGiottoLargeImageList(raster_objects = image_path,
                                        names = 'image',
                                        extent = mini_extent)
-
 mini_visium = addGiottoImage(gobject = mini_visium,
                              largeImages = imagelist)
-
 showGiottoImageNames(mini_visium)
 
-# visualize
+## 1.2. visualize ####
+# ------------------ #
 spatPlot2D(gobject = mini_visium,
            spat_unit = 'cell',
            show_image = TRUE,
            largeImage_name = 'image',
            point_shape = 'no_border',
            point_size = 2.5,
-           point_alpha = 0.4,
-           save_param = list(base_width = 7, base_height = 7))
+           point_alpha = 0.4)
 
-## normalize
+
+# 2 process ####
+# ------------ #
 mini_visium <- normalizeGiotto(gobject = mini_visium, scalefactor = 6000, verbose = T)
 
 ## filter
@@ -92,6 +95,8 @@ spatPlot2D(gobject = mini_visium,
            color_as_factor = F)
 
 
+# 3 dimension reduction ####
+# ------------------------ #
 mini_visium <- calculateHVF(gobject = mini_visium)
 
 ## run PCA on expression values (default)
@@ -104,14 +109,14 @@ plotPCA(gobject = mini_visium)
 mini_visium <- runUMAP(mini_visium, dimensions_to_use = 1:10)
 plotUMAP(gobject = mini_visium)
 
-
 mini_visium <- runtSNE(mini_visium, dimensions_to_use = 1:10)
 plotTSNE(gobject = mini_visium)
 
-
+# 4 cluster ####
+# ------------ #
 
 ## sNN network (default)
-mini_visium <- createNearestNetwork(gobject = mini_visium, dimensions_to_use = 1:10, k = 5)
+mini_visium <- createNearestNetwork(gobject = mini_visium, dimensions_to_use = 1:5, k = 10)
 ## Leiden clustering
 mini_visium <- doLeidenCluster(gobject = mini_visium, resolution = 0.1, n_iterations = 1000)
 
@@ -123,4 +128,40 @@ spatDimPlot(gobject = mini_visium,
             cell_color = 'leiden_clus',
             dim_point_size = 2, spat_point_size = 2.5)
 
-saveRDS(mini_visium, file = paste0(data_path, '/', 'gobject_mini_visium.RDS'))
+
+
+## 9. save Giotto object ####
+# ------------------------- #
+format(object.size(mini_visium), units = 'Mb')
+
+# you need to use your local GiottoData repo
+giottodata_repo = '/Users/rubendries/Packages/R_Packages/GiottoData/inst/Mini_datasets/'
+
+saveGiotto(mini_visium,
+           foldername = 'VisiumObject',
+           #dir = paste0(system.file(package = 'GiottoData'),'/', 'Mini_datasets/Vizgen/'),
+           dir = paste0(giottodata_repo, '/', 'Visium/'),
+           overwrite = TRUE)
+
+pDataDT(mini_visium)
+pDataDT(mini_visium)
+
+
+
+## some quick tests ##
+visium_test = loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/VisiumObject/',
+                                                      package = 'GiottoData'))
+
+
+
+spatDimPlot(gobject = visium_test,
+            show_image = TRUE,
+            largeImage_name = 'image',
+            cell_color = 'leiden_clus',
+            dim_point_size = 2, spat_point_size = 2.5)
+
+
+
+
+
+
