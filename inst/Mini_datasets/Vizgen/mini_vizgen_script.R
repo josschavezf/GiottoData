@@ -1,12 +1,16 @@
 
 ## MINI VIZGEN script and dataset preparation ##
 
-#remotes::install_github("drieslab/GiottoData")
-library(GiottoData) # devtools::load_all()
-library(data.table)
 
 #remotes::install_github("drieslab/Giotto@suite_dev")
 library(Giotto)
+
+#remotes::install_github("drieslab/GiottoData")
+library(GiottoData) # devtools::load_all()
+
+library(data.table)
+
+
 
 # 0. preparation ####
 # ----------------- #

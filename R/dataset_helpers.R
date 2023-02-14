@@ -19,28 +19,14 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen'),
 
 
   if(dataset == 'visium') {
-
-    # 1. load giotto object
-    mini_gobject = readRDS(system.file("/Mini_datasets/Visium/gobject_mini_visium.RDS", package = 'GiottoData'))
-
-    # 2. add image back
-    image_path = system.file("/Mini_datasets/Visium/images/deg_image.png", package = 'Giotto')
-    spatlocsDT = Giotto::get_spatial_locations(mini_gobject)
-    mini_extent = terra::ext(c(range(spatlocsDT$sdimx), range(spatlocsDT$sdimy)))
-    imagelist = Giotto::createGiottoLargeImageList(raster_objects = image_path,
-                                                   names = 'image',
-                                                   extent = mini_extent)
-    mini_gobject = Giotto::addGiottoImage(gobject = mini_gobject,
-                                          largeImages = imagelist)
-
+    mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/VisiumObject/', package = 'GiottoData'),
+                                      python_path = python_path)
   }
 
 
   if(dataset == 'vizgen') {
-
     mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'),
                               python_path = python_path)
-
   }
 
 
