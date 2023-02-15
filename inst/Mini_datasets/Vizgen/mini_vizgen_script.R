@@ -3,7 +3,7 @@
 
 
 #remotes::install_github("drieslab/Giotto@suite_dev")
-library(Giotto)
+library(Giotto) # devtools::load_all('/Users/rubendries/Packages/R_Packages/Giotto')
 
 #remotes::install_github("drieslab/GiottoData")
 library(GiottoData) # devtools::load_all()
@@ -454,6 +454,10 @@ pDataDT(vizsubc, spat_unit = 'aggregate')
 ## some quick tests ##
 gvizg = loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/',
                                                 package = 'GiottoData'))
+
+gvizg@spatial_info$aggregate@spatVector
+gvizg@spatial_info$aggregate@spatVectorCentroids
+gvizg@spatial_info$aggregate@overlaps
 
 # subsetting
 selected_ids = pDataDT(gvizg)$cell_ID[1:100]
