@@ -2,12 +2,14 @@
 ## MINI VIZGEN script and dataset preparation ##
 
 
+
 #remotes::install_github("drieslab/Giotto@suite_dev")
 library(Giotto) # devtools::load_all('/Users/rubendries/Packages/R_Packages/Giotto')
 
 #remotes::install_github("drieslab/GiottoData")
 library(GiottoData) # devtools::load_all()
 
+library(terra)
 library(data.table)
 
 
@@ -183,8 +185,6 @@ vizsubc = overlapToMatrix(vizsubc,
                           feat_info = 'rna',
                           name = 'raw')
 
-showGiottoSpatialInfo(vizsubc)
-showGiottoFeatInfo(vizsubc)
 
 vizsubc = aggregateStacks(gobject = vizsubc,
                           spat_units = c('z0', 'z1'),
@@ -194,6 +194,8 @@ vizsubc = aggregateStacks(gobject = vizsubc,
                           summarize_locations = 'mean',
                           new_spat_unit = 'aggregate')
 
+showGiottoSpatialInfo(vizsubc)
+showGiottoFeatInfo(vizsubc)
 
 # 4. filter object on aggregated layer #####
 # --------------------------------------- ##
@@ -203,7 +205,6 @@ vizsubc <- filterGiotto(gobject = vizsubc,
                         feat_det_in_min_cells = 3,
                         min_det_feats_per_cell = 5,
                         poly_info = c('z0', 'z1'))
-
 
 
 # 5. normalize on aggregated layer #####
