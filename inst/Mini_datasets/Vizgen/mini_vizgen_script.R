@@ -2,9 +2,10 @@
 ## MINI VIZGEN script and dataset preparation ##
 
 
-
 #remotes::install_github("drieslab/Giotto@suite_dev")
-library(Giotto) # devtools::load_all('/Users/rubendries/Packages/R_Packages/Giotto')
+library(Giotto)
+# devtools::load_all('/Users/rubendries/Packages/R_Packages/Giotto')
+# devtools::load_all('/Users/rubendries/r_packages/Giotto/')
 
 #remotes::install_github("drieslab/GiottoData")
 library(GiottoData) # devtools::load_all()
@@ -16,6 +17,7 @@ library(data.table)
 
 # 0. preparation ####
 # ----------------- #
+
 
 ## create instructions
 instrs = createGiottoInstructions(save_dir = tempdir(),
@@ -207,6 +209,7 @@ vizsubc <- filterGiotto(gobject = vizsubc,
                         poly_info = c('z0', 'z1'))
 
 
+
 # 5. normalize on aggregated layer #####
 # ----------------------------------- ##
 
@@ -283,6 +286,15 @@ plotUMAP(gobject = vizsubc, spat_unit = 'aggregate')
 
 # 8. graph-based clustering ####
 # ---------------------------- #
+
+devtools::load_all('/Users/rubendries/r_packages/Giotto/')
+
+Giotto:::set_NearestNetwork
+
+Giotto:::create_nn_net_obj()
+
+Giotto:::get_dimReduction()
+
 vizsubc <- createNearestNetwork(gobject = vizsubc, dimensions_to_use = 1:8, k = 10,
                                 spat_unit = 'aggregate')
 vizsubc <- doLeidenCluster(gobject = vizsubc, resolution = 0.05, n_iterations = 1000,
@@ -330,11 +342,11 @@ vizsubc = createSpatialNetwork(vizsubc, spat_unit = 'aggregate')
 # kNN with k of 8 nearest
 vizsubc = createSpatialNetwork(vizsubc, spat_unit = 'aggregate', method = 'kNN', k = 8)
 # create spatial weight matrix
-vizsubc = Giotto::createSpatialWeightMatrix(vizsubc,
-                                            spat_unit = 'aggregate',
-                                            method = 'distance',
-                                            spatial_network_to_use = 'kNN_network',
-                                            return_gobject = TRUE)
+vizsubc = createSpatialWeightMatrix(vizsubc,
+                                    spat_unit = 'aggregate',
+                                    method = 'distance',
+                                    spatial_network_to_use = 'kNN_network',
+                                    return_gobject = TRUE)
 
 pDataDT(vizsubc, 'aggregate')
 spatPlot(gobject = vizsubc, spat_unit = 'aggregate', show_network = T,
