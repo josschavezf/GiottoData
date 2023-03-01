@@ -36,6 +36,21 @@ locations_path = paste0(data_path, '/', 'visium_DG_locs.txt')
 
 # 1. create subcellular dataset with transcript and polygon information ####
 # ------------------------------------------------------------------------ #
+
+testmat = readExprMatrix(expr_path)
+
+testmat = read_expression_data(expr_path)
+
+seq_along(testmat)
+testmat[[1]]
+
+
+set_expression_values
+
+testloc = read_spatial_location_data()
+
+devtools::load_all('/Users/rubendries/Packages/R_Packages/Giotto')
+
 mini_visium <- createGiottoObject(expression = expr_path,
                                   spatial_locs = locations_path,
                                   instructions = instrs)

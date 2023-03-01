@@ -199,14 +199,36 @@ vizsubc = aggregateStacks(gobject = vizsubc,
 showGiottoSpatialInfo(vizsubc)
 showGiottoFeatInfo(vizsubc)
 
+
 # 4. filter object on aggregated layer #####
 # --------------------------------------- ##
+
+
+testfilter <- filterGiotto(gobject = vizsubc,
+                        spat_unit = 'aggregate',
+                        expression_threshold = 1,
+                        feat_det_in_min_cells = 3,
+                        min_det_feats_per_cell = 5,
+                        poly_info = c('aggregate'))
+
+testfilter@spatial_locs$z0
+testfilter@spatial_locs$z1
+testfilter@spatial_locs$aggregate
+
+testfilter@spatial_info$z0
+testfilter@spatial_info$z1
+testfilter@spatial_info$aggregate
+
+
 vizsubc <- filterGiotto(gobject = vizsubc,
                         spat_unit = 'aggregate',
                         expression_threshold = 1,
                         feat_det_in_min_cells = 3,
                         min_det_feats_per_cell = 5,
-                        poly_info = c('z0', 'z1'))
+                        poly_info = c('aggregate'))
+
+
+
 
 
 
@@ -286,15 +308,6 @@ plotUMAP(gobject = vizsubc, spat_unit = 'aggregate')
 
 # 8. graph-based clustering ####
 # ---------------------------- #
-
-devtools::load_all('/Users/rubendries/r_packages/Giotto/')
-
-Giotto:::set_NearestNetwork
-
-Giotto:::create_nn_net_obj()
-
-Giotto:::get_dimReduction()
-
 vizsubc <- createNearestNetwork(gobject = vizsubc, dimensions_to_use = 1:8, k = 10,
                                 spat_unit = 'aggregate')
 vizsubc <- doLeidenCluster(gobject = vizsubc, resolution = 0.05, n_iterations = 1000,
@@ -357,14 +370,13 @@ spatPlot(gobject = vizsubc, spat_unit = 'aggregate', show_network = T,
 ## 9.1 spatial genes ####
 km_spatialfeats = binSpect(vizsubc, spat_unit = 'aggregate')
 
-spatFeatPlot2D(vizsubc,
+spatFeatPlot2D_single(vizsubc,
                spat_unit = 'aggregate',
                expression_values = 'scaled',
                feats = km_spatialfeats[1:4]$feats,
                point_shape = 'border', point_border_stroke = 0.1,
                show_network = F, network_color = 'lightgrey', point_size = 2.5,
                cow_n_col = 2)
-
 
 ## 9.2 spatial co-expression ####
 # here we use existing detectSpatialCorGenes function to calculate pairwise distances between genes
