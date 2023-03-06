@@ -132,7 +132,7 @@ spatDimPlot(gobject = mini_visium,
             dim_point_size = 2, spat_point_size = 2.5)
 
 
-## 9. save Giotto object ####
+# 9. save Giotto object ####
 # ------------------------- #
 format(object.size(mini_visium), units = 'Mb')
 
@@ -163,8 +163,10 @@ spatDimPlot(gobject = visium_test,
 
 
 
-## 10. build from scratch ####
+# 10. build from scratch ####
 # -------------------------- #
+
+devtools::load_all('/Users/rubendries/r_packages/Giotto/')
 
 # 10.1 get expression data
 list_expression(mini_visium)
@@ -178,9 +180,9 @@ spatial_locations = getSpatialLocations(mini_visium, name = 'raw', output = 'dat
 
 # 10.3 get cell and feature metadata
 list_cell_metadata(mini_visium)
-cell_metadata = get_cell_metadata(mini_visium)
+cell_metadata = getCellMetadata(mini_visium, output = 'data.table')
 list_feat_metadata(mini_visium)
-feat_metadata = get_feature_metadata(mini_visium)
+feat_metadata = getFeatureMetadata(mini_visium, output = 'data.table')
 
 # 10.4 dimension reduction
 list_dim_reductions(mini_visium)
@@ -194,8 +196,27 @@ sNN_network = getNearestNetwork(mini_visium, nn_type = 'sNN', name = 'sNN.pca', 
 
 # 10.6 large images
 list_images(mini_visium)
-images = get_giottoLargeImage(mini_visium, name = 'image')
+images = getGiottoImage(mini_visium, image_type = 'largeImage', name = 'image')
+plot(images)
 
+
+## 10.1 create spatialExperiment ####
+
+speg = giottoToSpatialExperiment(giottoObj = mini_visium)
+
+class(speg[[1]])
+
+speg_rna = speg[[1]]
+
+SummarizedExperiment::assayNames(speg_rna)
+
+speg_rna@NAMES
+
+speg_rna@assays@data$normalized_rna_cell
+
+guard_against_notgiotto
+
+?SpatialExperiment::SpatialExperiment()
 
 # remake
 mini_visium_remake <- createGiottoObject(expression = list('cell' =
