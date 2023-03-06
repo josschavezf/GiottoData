@@ -74,6 +74,9 @@ spatPlot2D(gobject = mini_visium,
 # ------------ #
 mini_visium <- normalizeGiotto(gobject = mini_visium, scalefactor = 6000, verbose = T)
 
+list_expression(mini_visium)
+list_spatial_locations(mini_visium)
+
 ## filter
 mini_visium <- filterGiotto(gobject = mini_visium,
                             expression_threshold = 1,
