@@ -81,6 +81,7 @@ showGiottoSpatialInfo(vizsubc)
 # this can/will be used when aggregating for example counts to cells
 vizsubc = addSpatialCentroidLocations(gobject = vizsubc,
                                       poly_info = paste0('z',0:1),
+                                      provenance = list('z0', 'z1'),
                                       return_gobject = T)
 showGiottoSpatLocs(vizsubc)
 
@@ -199,6 +200,7 @@ vizsubc = aggregateStacks(gobject = vizsubc,
 showGiottoSpatialInfo(vizsubc)
 showGiottoFeatInfo(vizsubc)
 
+
 # 4. filter object on aggregated layer #####
 # --------------------------------------- ##
 vizsubc <- filterGiotto(gobject = vizsubc,
@@ -206,7 +208,10 @@ vizsubc <- filterGiotto(gobject = vizsubc,
                         expression_threshold = 1,
                         feat_det_in_min_cells = 3,
                         min_det_feats_per_cell = 5,
-                        poly_info = c('z0', 'z1'))
+                        poly_info = c('aggregate'))
+
+
+
 
 
 
@@ -283,24 +288,21 @@ plotPCA(vizsubc,
 vizsubc <- runUMAP(vizsubc, dimensions_to_use = 1:8, n_threads = 4, spat_unit = 'aggregate')
 plotUMAP(gobject = vizsubc, spat_unit = 'aggregate')
 
+vizsubc <- runtSNE(vizsubc, dimensions_to_use = 1:8, spat_unit = 'aggregate')
+plotTSNE(gobject = vizsubc, spat_unit = 'aggregate')
+
 
 # 8. graph-based clustering ####
 # ---------------------------- #
-
-devtools::load_all('/Users/rubendries/r_packages/Giotto/')
-
-Giotto:::set_NearestNetwork
-
-Giotto:::create_nn_net_obj()
-
-Giotto:::get_dimReduction()
-
 vizsubc <- createNearestNetwork(gobject = vizsubc, dimensions_to_use = 1:8, k = 10,
                                 spat_unit = 'aggregate')
 vizsubc <- doLeidenCluster(gobject = vizsubc, resolution = 0.05, n_iterations = 1000,
                            spat_unit = 'aggregate')
+vizsubc <- doLouvainCluster(gobject = vizsubc, resolution = 5,
+                           spat_unit = 'aggregate')
 
-# visualize UMAP cluster results
+
+# visualize UMAP / TSNE cluster results
 plotUMAP(gobject = vizsubc,
          spat_unit = 'aggregate',
          cell_color = 'leiden_clus',
@@ -314,6 +316,22 @@ spatInSituPlotPoints(vizsubc,
                      polygon_color = 'white',
                      polygon_line_size = 0.1,
                      polygon_fill = 'leiden_clus',
+                     polygon_fill_as_factor = T,
+                     coord_fix_ratio = T)
+
+plotTSNE(gobject = vizsubc,
+         spat_unit = 'aggregate',
+         cell_color = 'louvain_clus',
+         show_NN_network = T,
+         point_size = 2.5)
+
+spatInSituPlotPoints(vizsubc,
+                     show_polygon = TRUE,
+                     spat_unit = 'aggregate',
+                     polygon_feat_type = 'aggregate',
+                     polygon_color = 'white',
+                     polygon_line_size = 0.1,
+                     polygon_fill = 'louvain_clus',
                      polygon_fill_as_factor = T,
                      coord_fix_ratio = T)
 
@@ -357,14 +375,13 @@ spatPlot(gobject = vizsubc, spat_unit = 'aggregate', show_network = T,
 ## 9.1 spatial genes ####
 km_spatialfeats = binSpect(vizsubc, spat_unit = 'aggregate')
 
-spatFeatPlot2D(vizsubc,
+spatFeatPlot2D_single(vizsubc,
                spat_unit = 'aggregate',
                expression_values = 'scaled',
                feats = km_spatialfeats[1:4]$feats,
                point_shape = 'border', point_border_stroke = 0.1,
                show_network = F, network_color = 'lightgrey', point_size = 2.5,
                cow_n_col = 2)
-
 
 ## 9.2 spatial co-expression ####
 # here we use existing detectSpatialCorGenes function to calculate pairwise distances between genes
@@ -468,15 +485,21 @@ pDataDT(vizsubc, spat_unit = 'aggregate')
 gvizg = loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/',
                                                 package = 'GiottoData'))
 
-gvizg@spatial_info$aggregate@spatVector
-gvizg@spatial_info$aggregate@spatVectorCentroids
-gvizg@spatial_info$aggregate@overlaps
 
 # subsetting
 selected_ids = pDataDT(gvizg)$cell_ID[1:100]
-mySubset <- Giotto::subsetGiotto(gobject = gvizg, cell_ids = selected_ids)
+?activeSpatUnit
+?activeFeatType
 
-spatInSituPlotPoints(gvizg,
+# important to specify which spatial_unit to use and which polygon information slots to update
+mySubset <- subsetGiotto(gobject = gvizg, cell_ids = selected_ids,
+                         spat_unit = 'aggregate',
+                         poly_info = c('aggregate'))
+
+pDataDT(mySubset, 'aggregate')
+fDataDT(mySubset)
+
+spatInSituPlotPoints(mySubset,
                      spat_unit = 'aggregate',
                      show_image = T,
                      largeImage_name = 'dapi_z0',
@@ -492,6 +515,7 @@ spatInSituPlotPoints(gvizg,
                      coord_fix_ratio = TRUE)
 
 
-
-
+spatPlot(gobject = mySubset, spat_unit = 'aggregate', show_network = T,
+         network_color = 'lightgray', spatial_network_name = 'Delaunay_network',
+         point_size = 2.5, cell_color = 'leiden_clus')
 

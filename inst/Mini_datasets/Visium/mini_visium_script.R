@@ -1,6 +1,7 @@
 ## MINI VISIUM script and dataset preparation ##
 
 # devtools::load_all('/Users/rubendries/r_packages/Giotto/')
+# devtools::load_all('/Users/rubendries/Packages/R_Packages/Giotto/')
 # devtools::load_all()
 
 #remotes::install_github("drieslab/Giotto@suite_dev")
@@ -72,6 +73,9 @@ spatPlot2D(gobject = mini_visium,
 # 2 process ####
 # ------------ #
 mini_visium <- normalizeGiotto(gobject = mini_visium, scalefactor = 6000, verbose = T)
+
+list_expression(mini_visium)
+list_spatial_locations(mini_visium)
 
 ## filter
 mini_visium <- filterGiotto(gobject = mini_visium,
@@ -166,33 +170,34 @@ spatDimPlot(gobject = visium_test,
 # 10. build from scratch ####
 # -------------------------- #
 
-devtools::load_all('/Users/rubendries/r_packages/Giotto/')
 
-# 10.1 get expression data
+# 10.1 get expression data as matrix
 list_expression(mini_visium)
 raw_matrix = getExpression(mini_visium, values = 'raw', output = 'matrix')
 normalized_matrix = getExpression(mini_visium, values = 'normalized', output = 'matrix')
 scaled_matrix = getExpression(mini_visium, values = 'scaled', output = 'matrix')
 
-# 10.2 get spatial location data
+# 10.2 get spatial location data as a 3-column data.table
 list_spatial_locations(mini_visium)
 spatial_locations = getSpatialLocations(mini_visium, name = 'raw', output = 'data.table')
 
-# 10.3 get cell and feature metadata
+# 10.3 get cell and feature metadata as data.tables
 list_cell_metadata(mini_visium)
 cell_metadata = getCellMetadata(mini_visium, output = 'data.table')
 list_feat_metadata(mini_visium)
 feat_metadata = getFeatureMetadata(mini_visium, output = 'data.table')
 
-# 10.4 dimension reduction
+
+# 10.4 dimension reduction as matrix
 list_dim_reductions(mini_visium)
 pca_dim = getDimReduction(mini_visium, reduction_method = 'pca', name = 'pca', output = 'matrix')
-pca_dim = getDimReduction(mini_visium, reduction_method = 'umap', name = 'umap', output = 'matrix')
-pca_dim = getDimReduction(mini_visium, reduction_method = 'tsne', name = 'tsne', output = 'matrix')
+umap_dim = getDimReduction(mini_visium, reduction_method = 'umap', name = 'umap', output = 'matrix')
+tsne_dim = getDimReduction(mini_visium, reduction_method = 'tsne', name = 'tsne', output = 'matrix')
 
-# 10.5 get nearest networks
+# 10.5 get nearest networks as data.table
 list_nearest_networks(mini_visium)
 sNN_network = getNearestNetwork(mini_visium, nn_type = 'sNN', name = 'sNN.pca', output = 'data.table')
+sNN_network = sNN_network[,.(from, to, distance)]
 
 # 10.6 large images
 list_images(mini_visium)
@@ -224,8 +229,24 @@ mini_visium_remake <- createGiottoObject(expression = list('cell' =
                                                                     list('raw' = raw_matrix,
                                                                          'normalized' = normalized_matrix,
                                                                          'scaled' = scaled_matrix))),
+                                         spatial_locs = list('cell' =
+                                                               list('raw' = spatial_locations)),
                                          instructions = instrs)
 
+
+
+# remake
+mini_visium_remake <- createGiottoObject(expression = list('cell' =
+                                                             list('rna' =
+                                                                    list('raw' = raw_matrix,
+                                                                         'normalized' = normalized_matrix,
+                                                                         'scaled' = scaled_matrix))),
+                                         instructions = instrs)
+
+
+# option 1: create S4 object + set function
+# option 2: read alternative input --> S4 function + set function
+# option 3: createGiottoObject using #1 or #2
 
 mini_visium_remake = setSpatialLocations(gobject = mini_visium_remake, spatlocs = spatial_locations)
 
@@ -237,15 +258,21 @@ mini_visium_remake = set_feature_metadata(gobject = mini_visium_remake,
                                        metadata = feat_metadata,
                                        spat_unit = 'cell', feat_type = 'rna')
 
+pca_obj = create_dim_obj(name = 'pca', reduction = 'cells', reduction_method = 'pca',
+                         coordinates = pca_dim)
+umap_obj = create_dim_obj(name = 'umap', reduction = 'cells', reduction_method = 'umap',
+                         coordinates = umap_dim)
+tsne_obj = create_dim_obj(name = 'tsne', reduction = 'cells', reduction_method = 'tsne',
+                         coordinates = tsne_dim)
+mini_visium_remake = setDimReduction(gobject = mini_visium_remake, dimObject = pca_obj)
+mini_visium_remake = setDimReduction(gobject = mini_visium_remake, dimObject = umap_obj)
+mini_visium_remake = setDimReduction(gobject = mini_visium_remake, dimObject = tsne_obj)
 
-read_dimension_reduction()
-
-create_dim_obj()
-
-mini_visium_remake = setDimReduction(gobject = mini_visium_remake, dimObject = )
+mini_visium_remake = setNearestNetwork(gobject = mini_visium_remake, nn_network = sNN_network)
 
 spatDimPlot(gobject = mini_visium_remake,
-            show_image = TRUE,
+            show_NN_network = T,
+            show_image = F,
             largeImage_name = 'image',
             cell_color = 'leiden_clus',
             dim_point_size = 2, spat_point_size = 2.5)
