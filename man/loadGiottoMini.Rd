@@ -5,7 +5,7 @@
 \title{loadGiottoMini}
 \usage{
 loadGiottoMini(
-  dataset = c("visium", "seqfish", "starmap", "vizgen"),
+  dataset = c("visium", "seqfish", "starmap", "vizgen", "cosmx"),
   python_path = NULL
 )
 }
@@ -19,8 +19,12 @@ This function will automatically load one of the existing mini
 giotto objects. These giotto objects can be used to test Giotto functions
 and run examples. If no python path is provided it will try to find and use
 the Giotto python environment. Images associated with the giotto mini objects
-will be reconnected if possible.
-
+will be reconnected if possible. Available datasets are:
+\itemize{
+  \item{1. visium: mini dataset created from the mouse brain sample }
+  \item{2. vizgen: mini dataset created from the mouse brain sample }
+  \item{3. cosmx: mini dataset created from the lung12 sample }
+}
 Instructions, such as for saving plots, can be changed
 using the \code{\link{changeGiottoInstructions}}
 }
