@@ -2,12 +2,7 @@
 ## MINI VIZGEN script and dataset preparation ##
 
 
-#remotes::install_github("drieslab/Giotto@suite_dev")
 library(Giotto)
-# devtools::load_all('/Users/rubendries/Packages/R_Packages/Giotto')
-# devtools::load_all('/Users/rubendries/r_packages/Giotto/')
-
-#remotes::install_github("drieslab/GiottoData")
 library(GiottoData) # devtools::load_all()
 
 library(terra)
@@ -463,7 +458,7 @@ spatInSituPlotHex(vizsubc,
 
 
 
-## 9. save Giotto object ####
+# 10. save Giotto object ####
 # ------------------------- #
 format(object.size(vizsubc), units = 'Mb')
 
