@@ -25,18 +25,21 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 
 
   if(dataset == 'visium') {
     mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/VisiumObject/', package = 'GiottoData'),
-                                      python_path = python_path)
+                                      python_path = python_path,
+                                      reconnect_giottoImage = FALSE)
   }
 
 
   if(dataset == 'vizgen') {
     mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'),
-                              python_path = python_path)
+                              python_path = python_path,
+                              reconnect_giottoImage = FALSE)
   }
 
   if(dataset == 'cosmx') {
     mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/CosMx/CosMxObject/', package = 'GiottoData'),
-                                      python_path = python_path)
+                                      python_path = python_path,
+                                      reconnect_giottoImage = FALSE)
   }
 
 
