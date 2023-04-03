@@ -16,10 +16,11 @@ loadGiottoMini(
 }
 \description{
 This function will automatically load one of the existing mini
-giotto objects. These giotto objects can be used to test Giotto functions
-and run examples. If no python path is provided it will try to find and use
-the Giotto python environment. Images associated with the giotto mini objects
-will be reconnected if possible. Available datasets are:
+giotto objects. These are processed giotto objects that can be used to test
+Giotto functions and run examples. If no python path is provided it will try
+to find and use the Giotto python environment.
+Images associated with the giotto mini objects will be reconnected if possible.
+Available datasets are:
 \itemize{
   \item{1. visium: mini dataset created from the mouse brain sample }
   \item{2. vizgen: mini dataset created from the mouse brain sample }
