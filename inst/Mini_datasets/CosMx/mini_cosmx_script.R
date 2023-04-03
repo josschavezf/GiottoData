@@ -164,7 +164,6 @@ spatInSituPlotPoints(fov_join,
 showGiottoImageNames(fov_join)
 
 
-
 spatPlot2D(gobject = fov_join,
            show_image = TRUE,
            largeImage_name = c('fov002-composite', 'fov003-composite'),
@@ -281,12 +280,12 @@ pl
 # ------------------------- #
 format(object.size(fov_join), units = 'Mb')
 
-# you need to use your local GiottoData repo
+# you need to use your local GiottoData repo if you used library(GiottoData), rather than devtools::load_all()
 giottodata_repo = '/Users/rubendries/Packages/R_Packages/GiottoData/inst/Mini_datasets/'
 
 saveGiotto(fov_join,
            foldername = 'CosMxObject',
-           #dir = paste0(system.file(package = 'GiottoData'),'/', 'Mini_datasets/Vizgen/'),
+           #dir = paste0(system.file(package = 'GiottoData'),'/', 'Mini_datasets/'),
            dir = paste0(giottodata_repo, '/', 'CosMx/'),
            overwrite = TRUE)
 
