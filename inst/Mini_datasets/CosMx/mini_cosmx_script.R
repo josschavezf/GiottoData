@@ -240,6 +240,81 @@ featoverlapmeta = combineFeatureOverlapData(fov_join,
 
 
 
+# 6. normalization ####
+# ------------------- #
+
+# filter (feat_type = 'rna' by default)
+fov_join <- filterGiotto(gobject = fov_join,
+                         feat_type = 'rna',
+                         expression_threshold = 1,
+                         feat_det_in_min_cells = 3,
+                         min_det_feats_per_cell = 5)
+
+# normalize
+# standard method of normalization (log normalization based)
+fov_join <- normalizeGiotto(gobject = fov_join,
+                            feat_type = 'rna',
+                            norm_methods = 'standard',
+                            verbose = TRUE)
+fov_join <- normalizeGiotto(gobject = fov_join,
+                            feat_type = 'neg_probe',
+                            norm_methods = 'standard',
+                            library_size_norm = FALSE,
+                            verbose = TRUE)
+
+# new normalization method based on pearson correlations (Lause/Kobak et al. 2021)
+# this normalized matrix is given the name 'pearson' using the update_slot param
+fov_join <- normalizeGiotto(gobject = fov_join,
+                            feat_type = 'rna',
+                            scalefactor = 5000,
+                            verbose = TRUE,
+                            norm_methods = 'pearson_resid',
+                            update_slot = 'pearson')
+
+showGiottoExpression(fov_join)
+
+
+# add statistics based on log normalized values for features rna and negative probes
+fov_join = addStatistics(gobject = fov_join,
+                         expression_values = 'raw',
+                         feat_type = 'rna')
+fov_join = addStatistics(gobject = fov_join,
+                         expression_values = 'raw',
+                         feat_type = 'neg_probe')
+
+# View cellular data (default is feat = 'rna')
+showGiottoCellMetadata(fov_join)
+# View feature data
+showGiottoFeatMetadata(fov_join)
+
+
+
+
+cell_meta = pDataDT(fov_join)
+
+cell_area = terra::expanse(fov_join@spatial_info$cell@spatVector)
+fov_join@spatial_info$cell@spatVector[['cell_area']] = cell_area
+
+perimeter = terra::perim(fov_join@spatial_info$cell@spatVector)
+fov_join@spatial_info$cell@spatVector[['perimeter']] = perimeter
+
+spatvecDT = spatVector_to_dt(fov_join@spatial_info$cell@spatVector)
+
+spatvecDT = unique(spatvecDT[,.(poly_ID, cell_area, perimeter)])
+
+cell_meta = merge.data.table(cell_meta, spatvecDT, by.x = 'cell_ID', by.y = 'poly_ID')
+
+plot(cell_meta$cell_area, cell_meta$perimeter)
+
+plot(cell_meta$total_expr, cell_meta$perimeter)
+
+plot(cell_meta$total_expr, cell_meta$area)
+
+
+
+?terra::gaps
+
+
 # 6. visualize transcripts ####
 # --------------------------- #
 segmDT = spatVector_to_dt(fov_join@spatial_info$cell@spatVector)
@@ -272,6 +347,9 @@ pl = pl + scale_size_manual(values = c('N' = 0.7, 'Y' = 0.3))
 pl = pl + theme_minimal() + theme(panel.background = element_rect(fill="black"), panel.grid = element_blank())
 pl = pl + geom_polygon(data = segmDT, aes(x = x, y = y, group = poly_ID), color = 'white', size = 0.2, fill = NA)
 pl
+
+
+# 7.
 
 
 
