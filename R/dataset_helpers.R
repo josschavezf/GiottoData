@@ -3,10 +3,11 @@
 #' @param dataset mini dataset giotto object to load
 #' @param python_path pythan path to use
 #' @description This function will automatically load one of the existing mini
-#' giotto objects. These giotto objects can be used to test Giotto functions
-#' and run examples. If no python path is provided it will try to find and use
-#' the Giotto python environment. Images associated with the giotto mini objects
-#' will be reconnected if possible. Available datasets are:
+#' giotto objects. These are processed giotto objects that can be used to test
+#' Giotto functions and run examples. If no python path is provided it will try
+#' to find and use the Giotto python environment.
+#' Images associated with the giotto mini objects will be reconnected if possible.
+#' Available datasets are:
 #' \itemize{
 #'   \item{1. visium: mini dataset created from the mouse brain sample }
 #'   \item{2. vizgen: mini dataset created from the mouse brain sample }
@@ -19,23 +20,26 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 
                           python_path = NULL) {
 
 
-  dataset = match.arg(dataset, choices = c('visium', 'seqfish', 'starmap', 'vizgen'))
+  dataset = match.arg(dataset, choices = c('visium', 'seqfish', 'starmap', 'vizgen', 'cosmx'))
 
 
   if(dataset == 'visium') {
     mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/VisiumObject/', package = 'GiottoData'),
-                                      python_path = python_path)
+                                      python_path = python_path,
+                                      reconnect_giottoImage = FALSE)
   }
 
 
   if(dataset == 'vizgen') {
     mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'),
-                              python_path = python_path)
+                              python_path = python_path,
+                              reconnect_giottoImage = FALSE)
   }
 
   if(dataset == 'cosmx') {
     mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/CosMx/CosMxObject/', package = 'GiottoData'),
-                                      python_path = python_path)
+                                      python_path = python_path,
+                                      reconnect_giottoImage = FALSE)
   }
 
 
