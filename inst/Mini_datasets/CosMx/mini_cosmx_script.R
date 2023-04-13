@@ -310,9 +310,9 @@ plot(cell_meta$total_expr, cell_meta$perimeter)
 
 plot(cell_meta$total_expr, cell_meta$area)
 
+plot(cell_meta$nr_feats, cell_meta$area)
 
 
-?terra::gaps
 
 
 # 6. visualize transcripts ####

@@ -1,8 +1,9 @@
 
 ## MINI VIZGEN script and dataset preparation ##
 
+install.packages('devtools')
 
-library(Giotto)
+library(Giotto) # devtools::load_all(path = '/Users/rubendries/Packages/R_Packages/Giotto/')
 library(GiottoData) # devtools::load_all()
 
 library(terra)
@@ -235,7 +236,6 @@ spatInSituPlotPoints(vizsubc,
                      polygon_fill = 'total_expr',
                      polygon_fill_as_factor = F,
                      coord_fix_ratio = T)
-
 
 
 # 6. highly variable genes ####
