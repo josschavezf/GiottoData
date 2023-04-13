@@ -136,12 +136,98 @@ spatDimPlot(gobject = mini_visium,
             dim_point_size = 2, spat_point_size = 2.5)
 
 
-## 9. save Giotto object ####
+# 5. spatial network ####
+# --------------------- #
+mini_visium <- createSpatialNetwork(gobject = mini_visium)
+
+mini_visium <- createSpatialNetwork(gobject = mini_visium,
+                                    method = 'kNN', k = 10,
+                                    maximum_distance_knn = 400,
+                                    name = 'spatial_network')
+
+
+# 6. spatial genes ####
+# ------------------- #
+showGiottoSpatNetworks(mini_visium)
+ranktest = binSpect(mini_visium, bin_method = 'rank',
+                    calc_hub = T, hub_min_int = 5,
+                    spatial_network_name = 'Delaunay_network')
+
+
+# 7. spatial co-expression ####
+# --------------------------- #
+
+# 7.1 cluster the top 500 spatial genes into 20 clusters
+ext_spatial_genes = ranktest[1:300,]$feats
+
+# here we use existing detectSpatialCorGenes function to calculate pairwise distances between genes (but set network_smoothing=0 to use default clustering)
+spat_cor_netw_DT = detectSpatialCorFeats(mini_visium,
+                                         method = 'network',
+                                         spatial_network_name = 'spatial_network',
+                                         subset_feats = ext_spatial_genes)
+
+# 7.2 identify most similar spatially correlated genes for one gene
+top10_genes = showSpatialCorFeats(spat_cor_netw_DT, feats = 'Dsp', show_top_feats = 10)
+
+spatFeatPlot2D(mini_visium,
+               expression_values = 'scaled',
+               feats = top10_genes$variable[1:4], point_size = 3)
+
+
+# 7.3 identify potenial spatial co-expression
+spat_cor_netw_DT = clusterSpatialCorFeats(spat_cor_netw_DT, name = 'spat_netw_clus', k = 7)
+
+# visualize clusters
+heatmSpatialCorFeats(mini_visium,
+                     spatCorObject = spat_cor_netw_DT,
+                     use_clus_name = 'spat_netw_clus',
+                     heatmap_legend_param = list(title = NULL),
+                     save_param = list(base_height = 6, base_width = 8, units = 'cm'))
+
+
+# 7.4 create metagenes / co-expression modules
+cluster_genes = getBalancedSpatCoexpressionFeats(spat_cor_netw_DT, maximum = 30)
+mini_visium = createMetafeats(mini_visium, feat_clusters = cluster_genes, name = 'cluster_metagene')
+
+spatCellPlot(mini_visium,
+             spat_enr_names = 'cluster_metagene',
+             cell_annotation_values = as.character(c(1:7)),
+             point_size = 1, cow_n_col = 3)
+
+
+
+
+# 8. spatially informed clusters ####
+# --------------------------------- #
+my_spatial_genes = names(cluster_genes)
+
+mini_visium <- runPCA(gobject = mini_visium,
+                      feats_to_use = my_spatial_genes,
+                      name = 'custom_pca')
+mini_visium <- runUMAP(mini_visium,
+                       dim_reduction_name = 'custom_pca',
+                       dimensions_to_use = 1:20,
+                       name = 'custom_umap')
+mini_visium <- createNearestNetwork(gobject = mini_visium,
+                                    dim_reduction_name = 'custom_pca',
+                                    dimensions_to_use = 1:20, k = 5,
+                                    name = 'custom_NN')
+mini_visium <- doLeidenCluster(gobject = mini_visium,
+                               network_name = 'custom_NN',
+                               resolution = 0.15, n_iterations = 1000,
+                               name = 'custom_leiden')
+
+spatPlot2D(mini_visium,
+           cell_color = 'custom_leiden')
+
+
+# 9. save Giotto object ####
 # ------------------------- #
 format(object.size(mini_visium), units = 'Mb')
 
 # you need to use your local GiottoData repo
-giottodata_repo = '/Users/rubendries/Packages/R_Packages/GiottoData/inst/Mini_datasets/'
+#giottodata_repo = '/Users/rubendries/Packages/R_Packages/GiottoData/inst/Mini_datasets/'
+giottodata_repo = '/Users/rubendries/r_packages/GiottoData//inst/Mini_datasets/'
 
 saveGiotto(mini_visium,
            foldername = 'VisiumObject',
@@ -159,6 +245,15 @@ visium_test = loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/Vis
                                                       package = 'GiottoData'))
 
 
+showGiottoImageNames(visium_test)
+
+plot(visium_test@largeImages$image@raster_object)
+
+spatPlot2D(visium_test,
+           show_image = T,
+           largeImage_name = 'image',
+           cell_color = 'custom_leiden')
+
 spatDimPlot(gobject = visium_test,
             show_image = TRUE,
             largeImage_name = 'image',
@@ -167,8 +262,18 @@ spatDimPlot(gobject = visium_test,
 
 
 
-## 10. build from scratch ####
+
+
+
+
+
+
+
+
+
+# 10. build from scratch ####
 # -------------------------- #
+
 
 # 10.1 get expression data as matrix
 list_expression(mini_visium)
@@ -182,9 +287,10 @@ spatial_locations = getSpatialLocations(mini_visium, name = 'raw', output = 'dat
 
 # 10.3 get cell and feature metadata as data.tables
 list_cell_metadata(mini_visium)
-cell_metadata = get_cell_metadata(mini_visium, output = 'data.table')
+cell_metadata = getCellMetadata(mini_visium, output = 'data.table')
 list_feat_metadata(mini_visium)
-feat_metadata = get_feature_metadata(mini_visium, output = 'data.table')
+feat_metadata = getFeatureMetadata(mini_visium, output = 'data.table')
+
 
 # 10.4 dimension reduction as matrix
 list_dim_reductions(mini_visium)
@@ -199,8 +305,27 @@ sNN_network = sNN_network[,.(from, to, distance)]
 
 # 10.6 large images
 list_images(mini_visium)
-images = get_giottoLargeImage(mini_visium, name = 'image')
+images = getGiottoImage(mini_visium, image_type = 'largeImage', name = 'image')
+plot(images)
 
+
+## 10.1 create spatialExperiment ####
+
+speg = giottoToSpatialExperiment(giottoObj = mini_visium)
+
+class(speg[[1]])
+
+speg_rna = speg[[1]]
+
+SummarizedExperiment::assayNames(speg_rna)
+
+speg_rna@NAMES
+
+speg_rna@assays@data$normalized_rna_cell
+
+guard_against_notgiotto
+
+?SpatialExperiment::SpatialExperiment()
 
 # remake
 mini_visium_remake <- createGiottoObject(expression = list('cell' =
