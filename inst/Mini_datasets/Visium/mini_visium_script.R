@@ -69,6 +69,7 @@ spatPlot2D(gobject = mini_visium,
            point_size = 2.5,
            point_alpha = 0.4)
 
+mini_visium@largeImages$image@raster_object
 
 # 2 process ####
 # ------------ #
@@ -227,7 +228,7 @@ format(object.size(mini_visium), units = 'Mb')
 
 # you need to use your local GiottoData repo
 #giottodata_repo = '/Users/rubendries/Packages/R_Packages/GiottoData/inst/Mini_datasets/'
-giottodata_repo = '/Users/rubendries/r_packages/GiottoData//inst/Mini_datasets/'
+#giottodata_repo = '/Users/rubendries/r_packages/GiottoData//inst/Mini_datasets/'
 
 saveGiotto(mini_visium,
            foldername = 'VisiumObject',
@@ -239,15 +240,10 @@ pDataDT(mini_visium)
 pDataDT(mini_visium)
 
 
-
 ## some quick tests ##
 visium_test = loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/VisiumObject/',
                                                       package = 'GiottoData'))
 
-
-showGiottoImageNames(visium_test)
-
-plot(visium_test@largeImages$image@raster_object)
 
 spatPlot2D(visium_test,
            show_image = T,
@@ -259,15 +255,6 @@ spatDimPlot(gobject = visium_test,
             largeImage_name = 'image',
             cell_color = 'leiden_clus',
             dim_point_size = 2, spat_point_size = 2.5)
-
-
-
-
-
-
-
-
-
 
 
 
