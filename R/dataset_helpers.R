@@ -50,7 +50,7 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 
   if(dataset == 'starmap') {
     mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/3D_starmap/3DStarmapObject/', package = 'GiottoData'),
                               python_path = python_path)
-  }
+    }
 
 
   # 1. change default instructions
