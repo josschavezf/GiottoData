@@ -88,7 +88,8 @@ getSpatialDataset = function(dataset = c('ST_OB1',
                                          'slideseq_cerebellum',
                                          'ST_SCC',
                                          'scRNA_prostate',
-                                         'scRNA_mouse_brain'),
+                                         'scRNA_mouse_brain',
+                                         'mol_cart_lung_873_C1'),
                              directory = getwd(),
                              verbose = TRUE,
                              dryrun = FALSE,
@@ -107,7 +108,8 @@ getSpatialDataset = function(dataset = c('ST_OB1',
                                                      'slideseq_cerebellum',
                                                      'ST_SCC',
                                                      'scRNA_prostate',
-                                                     'scRNA_mouse_brain'))
+                                                     'scRNA_mouse_brain',
+                                                     'mol_cart_lung_873_C1'))
 
   # check operating system first
   os_specific_system = Giotto:::get_os()
@@ -121,7 +123,7 @@ getSpatialDataset = function(dataset = c('ST_OB1',
   # check directory
   if(!file.exists(directory)) {
     warning('The output directory does not exist and will be created \n')
-    dir.create(directory, recursive = T)
+    dir.create(directory, recursive = TRUE)
   }
 
   datasets_file = system.file("extdata", "datasets.txt", package = 'GiottoData')
@@ -244,6 +246,35 @@ getSpatialDataset = function(dataset = c('ST_OB1',
       }
     }
 
+  }
+
+
+
+
+
+
+  spatial_seg_url = selected_dataset_info[['segmentations']]
+
+  if(spatial_seg_url == "") {
+    # Giotto:::wrap_msg('\n No segmentations found, skip this step \n')
+  } else {
+
+    if(verbose) {
+      Giotto:::wrap_msg("\n \n Download segmentations: \n")
+    }
+
+    spatial_seg_url = unlist(strsplit(spatial_seg_url, split = '\\|'))
+
+    for(url in spatial_seg_url) {
+      myfilename = basename(url)
+      mydestfile = paste0(directory,'/', myfilename)
+
+      if(dryrun) {
+        Giotto:::wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
+      } else {
+        utils::download.file(url = url, destfile = mydestfile, ...)
+      }
+    }
   }
 
 }
