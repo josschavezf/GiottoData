@@ -37,11 +37,16 @@ expr_path = paste0(data_path, '/', 'visium_DG_expr.txt.gz')
 # -------------------------------------- #
 locations_path = paste0(data_path, '/', 'visium_DG_locs.txt')
 
+## 0.4 path to metadata ####
+# -------------------------------------- #
+meta_path = paste0(data_path, '/', 'visium_DG_meta.txt')
+
 
 # 1. create subcellular dataset with transcript and polygon information ####
 # ------------------------------------------------------------------------ #
 mini_visium <- createGiottoObject(expression = expr_path,
                                   spatial_locs = locations_path,
+                                  cell_metadata = meta_path,
                                   instructions = instrs)
 
 showGiottoSpatLocs(mini_visium)
@@ -54,7 +59,7 @@ spatlocsDT = getSpatialLocations(mini_visium)
 mini_extent = terra::ext(c(range(spatlocsDT$sdimx), range(spatlocsDT$sdimy)))
 imagelist = createGiottoLargeImageList(raster_objects = image_path,
                                        names = 'image',
-                                       extent = mini_extent)
+                                       extent = terra::ext(2364.5, 6522.5, -5425.25, -2620.75))
 mini_visium = addGiottoImage(gobject = mini_visium,
                              largeImages = imagelist)
 showGiottoImageNames(mini_visium)
@@ -254,7 +259,8 @@ spatDimPlot(gobject = visium_test,
             show_image = TRUE,
             largeImage_name = 'image',
             cell_color = 'leiden_clus',
-            dim_point_size = 2, spat_point_size = 2.5)
+            dim_point_size = 2,
+            spat_point_size = 2.5)
 
 
 
