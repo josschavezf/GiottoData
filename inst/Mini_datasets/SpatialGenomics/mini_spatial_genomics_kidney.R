@@ -1,35 +1,11 @@
 ## Mini Spatial Genomics Kidney script and dataset preparation##
 # ------------------------- #
-install.packages('devtools')
 library(Giotto)
 
 # 1. Object Creation & Filtering #
 # ------------------------- #
 # Set directory containing SG data
-datadir = '/usr4/spclpgm/azug/Documents/GiottoData/inst/Mini_datasets/SpatialGenomics/RAW'
-
-# Spatial Genomics Object Convenience Function
-createSpatialGenomicsObject <- function(sg_dir = NULL) {
-  # Find files in Spatial Genomics directory
-  dapi = list.files(sg_dir, full.names = TRUE, pattern = 'DAPI')
-  mask = list.files(sg_dir, full.names = TRUE, pattern = 'mask')
-  tx = list.files(sg_dir, full.names = TRUE, pattern = 'transcript')
-  # Create Polygons
-  gpoly = createGiottoPolygonsFromMask(mask, shift_vertical_step = F, 
-                                       shift_horizontal_step = F, 
-                                       flip_horizontal = F, flip_vertical = F)
-  # Create Points
-  tx = data.table::fread(tx)
-  gpoints = createGiottoPoints(tx)
-  dim(tx)
-  # Create object and add image
-  gimg = createGiottoLargeImage(dapi, use_rast_ext = TRUE)
-  sg = createGiottoObjectSubcellular(gpoints = list('rna' = gpoints),
-                                     gpolygons = list('cell' = gpoly))
-  sg = addGiottoLargeImage(sg, largeImages = list(image = gimg))
-  # Return SG object
-  return(sg)
-}
+datadir = 'secret/path/to/Amelia/directories'
 
 # Create SG object using function
 sg <- createSpatialGenomicsObject(sg_dir = datadir)
@@ -158,7 +134,7 @@ spatFeatPlot2D(sg, expression_values = 'scaled',
 format(object.size(sg), units = 'Mb')
 
 # Use your local GiottoData repo
-giottodata_repo = '/usr4/spclpgm/azug/Documents/GiottoData/inst/Mini_datasets/'
+giottodata_repo = 'secret/path/to/Amelia/Mini_datasets_directories/'
 
 saveGiotto(gobject = sg,
            foldername = 'SpatialGenomicsObject',
@@ -166,7 +142,7 @@ saveGiotto(gobject = sg,
            overwrite = TRUE)
 
 # Test by Loading Object 
-sg_object_dir = '/usr4/spclpgm/azug/Documents/GiottoData/inst/Mini_datasets/SpatialGenomics/SpatialGenomicsObject/'
+sg_object_dir = 'secret/path/to/Amelia/Mini_datasets_directories/SpatialGenomics/SpatialGenomicsObject/'
 get_sg = loadGiotto(path_to_folder = sg_object_dir)
 spatInSituPlotPoints(get_sg,
                      show_image = FALSE,
