@@ -1,3 +1,0 @@
-"feat_ID"
-"cell"
-"feat_ID_uniq"
