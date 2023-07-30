@@ -12,15 +12,16 @@
 #'   \item{1. visium: mini dataset created from the mouse brain sample }
 #'   \item{2. vizgen: mini dataset created from the mouse brain sample }
 #'   \item{3. cosmx: mini dataset created from the lung12 sample }
+#'   \item{4. spatialgenomics: mini dataset created from the mouse kidney sample}
 #' }
 #' Instructions, such as for saving plots, can be changed
 #' using the \code{\link{changeGiottoInstructions}}
 #' @export
-loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 'cosmx'),
+loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 'cosmx', 'spatialgenomics'),
                           python_path = NULL) {
 
 
-  dataset = match.arg(dataset, choices = c('visium', 'seqfish', 'starmap', 'vizgen', 'cosmx'))
+  dataset = match.arg(dataset, choices = c('visium', 'seqfish', 'starmap', 'vizgen', 'cosmx', 'spatialgenomics'))
 
 
   if(dataset == 'visium') {
@@ -51,6 +52,11 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 
     mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/3D_starmap/3DStarmapObject/', package = 'GiottoData'),
                               python_path = python_path)
     }
+
+  if(dataset == 'spatialgenomics') {
+    mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/SpatialGenomics/SpatialGenomicsObject/', package = 'GiottoData'),
+                              python_path = python_path)
+  }
 
 
   # 1. change default instructions
