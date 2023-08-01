@@ -1,9 +1,10 @@
 
 ## MINI VIZGEN script and dataset preparation ##
 
-install.packages('devtools')
+library(Giotto)
+# devtools::load_all(path = '/Users/rubendries/Packages/R_Packages/Giotto/')
+# devtools::load_all(path = '/Users/rubendries/r_packages/Giotto/')
 
-library(Giotto) # devtools::load_all(path = '/Users/rubendries/Packages/R_Packages/Giotto/')
 library(GiottoData) # devtools::load_all()
 
 library(terra)
@@ -102,20 +103,6 @@ vizsubc = addGiottoImage(gobject = vizsubc,
                          largeImages = imagelist)
 
 showGiottoImageNames(vizsubc)
-
-
-# subset Giotto object based on locations
-vizsubc = subsetGiottoLocsMulti(vizsubc,
-                                spat_unit = c('z0', 'z1'),
-                                poly_info = list(z0 = 'z0', z1 = 'z1'),
-                                x_min = 6400.029,
-                                x_max = 6900.037,
-                                y_max = -4699.967,
-                                y_min = -5150.007,
-                                verbose = TRUE)
-
-showGiottoSpatLocs(vizsubc)
-showGiottoSpatialInfo(vizsubc)
 
 # visualize
 spatPlot2D(gobject = vizsubc,
@@ -463,7 +450,8 @@ spatInSituPlotHex(vizsubc,
 format(object.size(vizsubc), units = 'Mb')
 
 # you need to use your local GiottoData repo
-giottodata_repo = '/Users/rubendries/Packages/R_Packages/GiottoData/inst/Mini_datasets/'
+# giottodata_repo = '/Users/rubendries/Packages/R_Packages/GiottoData/inst/Mini_datasets/'
+giottodata_repo = '/Users/rubendries/r_packages/GiottoData//inst/Mini_datasets/'
 
 saveGiotto(vizsubc,
            foldername = 'VizgenObject',
@@ -487,7 +475,8 @@ selected_ids = pDataDT(gvizg)$cell_ID[1:100]
 ?activeFeatType
 
 # important to specify which spatial_unit to use and which polygon information slots to update
-mySubset <- subsetGiotto(gobject = gvizg, cell_ids = selected_ids,
+mySubset <- subsetGiotto(gobject = gvizg,
+                         cell_ids = selected_ids,
                          spat_unit = 'aggregate',
                          poly_info = c('aggregate'))
 
