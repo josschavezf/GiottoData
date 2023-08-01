@@ -6,7 +6,8 @@ library(GiottoData)
 # 1. Object Creation & Filtering #
 # ------------------------- #
 # Set directory containing SG data
-datadir = '/path/to/directory/containing/mini/SG/data/'
+# datadir = '/path/to/directory/containing/mini/SG/data/'
+datadir = getwd()
 
 # Create SG object using function
 sg <- createSpatialGenomicsObject(sg_dir = datadir)
