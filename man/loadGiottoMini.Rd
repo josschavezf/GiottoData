@@ -5,7 +5,7 @@
 \title{loadGiottoMini}
 \usage{
 loadGiottoMini(
-  dataset = c("visium", "seqfish", "starmap", "vizgen", "cosmx"),
+  dataset = c("visium", "seqfish", "starmap", "vizgen", "cosmx", "spatialgenomics"),
   python_path = NULL
 )
 }
@@ -25,6 +25,7 @@ Available datasets are:
   \item{1. visium: mini dataset created from the mouse brain sample }
   \item{2. vizgen: mini dataset created from the mouse brain sample }
   \item{3. cosmx: mini dataset created from the lung12 sample }
+  \item{4. spatialgenomics: mini dataset created from the mouse kidney sample}
 }
 Instructions, such as for saving plots, can be changed
 using the \code{\link{changeGiottoInstructions}}
