@@ -96,7 +96,8 @@ getSpatialDataset = function(dataset = c('ST_OB1',
                                          'ST_SCC',
                                          'scRNA_prostate',
                                          'scRNA_mouse_brain',
-                                         'mol_cart_lung_873_C1'),
+                                         'mol_cart_lung_873_C1',
+                                         'sg_mini_kidney'),
                              directory = getwd(),
                              verbose = TRUE,
                              dryrun = FALSE,
@@ -116,7 +117,8 @@ getSpatialDataset = function(dataset = c('ST_OB1',
                                                      'ST_SCC',
                                                      'scRNA_prostate',
                                                      'scRNA_mouse_brain',
-                                                     'mol_cart_lung_873_C1'))
+                                                     'mol_cart_lung_873_C1',
+                                                     'sg_mini_kidney'))
 
   # check operating system first
   os_specific_system = Giotto:::get_os()
