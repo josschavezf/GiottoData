@@ -1,11 +1,13 @@
 ## Mini Spatial Genomics Kidney script and dataset preparation##
 # ------------------------- #
 library(Giotto)
+library(GiottoData)
 
 # 1. Object Creation & Filtering #
 # ------------------------- #
 # Set directory containing SG data
-datadir = 'secret/path/to/Amelia/directories'
+# datadir = '/path/to/directory/containing/mini/SG/data/'
+datadir = getwd()
 
 # Create SG object using function
 sg <- createSpatialGenomicsObject(sg_dir = datadir)
@@ -134,7 +136,7 @@ spatFeatPlot2D(sg, expression_values = 'scaled',
 format(object.size(sg), units = 'Mb')
 
 # Use your local GiottoData repo
-giottodata_repo = 'secret/path/to/Amelia/Mini_datasets_directories/'
+giottodata_repo = 'GiottoData/inst/Mini_datasets/SpatialGenomics/'
 
 saveGiotto(gobject = sg,
            foldername = 'SpatialGenomicsObject',
@@ -142,7 +144,7 @@ saveGiotto(gobject = sg,
            overwrite = TRUE)
 
 # Test by Loading Object 
-sg_object_dir = 'secret/path/to/Amelia/Mini_datasets_directories/SpatialGenomics/SpatialGenomicsObject/'
+sg_object_dir = 'GiottoData/inst/Mini_datasets/SpatialGenomics/SpatialGenomicsObject/'
 get_sg = loadGiotto(path_to_folder = sg_object_dir)
 spatInSituPlotPoints(get_sg,
                      show_image = FALSE,
