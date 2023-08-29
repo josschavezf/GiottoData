@@ -16,23 +16,23 @@ loadSubObjectMini = function(x, idx = 1L) {
 
   # wrapped objects
   if(x %in% c('giottoPoints', 'giottoPolygon')) {
-    load_data = Giotto::vect(load_data)
+    load_data = GiottoClass::vect(load_data)
   }
 
   if(x == 'giottoLargeImage') {
     original_path = load_data@file_path
     new_path = gsub(pattern = '.*[/]GiottoData/', replacement = '', x = original_path)
     new_path = paste0(gDataDir(), new_path)
-    load_data = Giotto:::reconnect_giottoLargeImage(giottoLargeImage = load_data,
-                                                    image_path = new_path)
+    load_data = reconnect_giottoLargeImage(giottoLargeImage = load_data,
+                                           image_path = new_path)
   }
 
   if(x == 'giottoImage') {
     original_path = load_data@file_path
     new_path = gsub(pattern = '.*[/]GiottoData/', replacement = '', x = original_path)
     new_path = paste0(gDataDir(), new_path)
-    load_data = Giotto:::reconnect_giottoImage_MG(giottoImage = load_data,
-                                                  image_path = new_path)
+    load_data = reconnect_giottoImage_MG(giottoImage = load_data,
+                                         image_path = new_path)
   }
 
   return(load_data)

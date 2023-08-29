@@ -25,43 +25,43 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 
 
 
   if(dataset == 'visium') {
-    mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/VisiumObject/', package = 'GiottoData'),
-                                      python_path = python_path,
-                                      reconnect_giottoImage = FALSE)
+    mini_gobject = loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/VisiumObject/', package = 'GiottoData'),
+                              python_path = python_path,
+                              reconnect_giottoImage = FALSE)
   }
 
 
   if(dataset == 'vizgen') {
-    mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'),
+    mini_gobject = loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'),
                               python_path = python_path,
                               reconnect_giottoImage = FALSE)
   }
 
   if(dataset == 'cosmx') {
-    mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/CosMx/CosMxObject/', package = 'GiottoData'),
-                                      python_path = python_path,
-                                      reconnect_giottoImage = FALSE)
+    mini_gobject = loadGiotto(path_to_folder = system.file('/Mini_datasets/CosMx/CosMxObject/', package = 'GiottoData'),
+                              python_path = python_path,
+                              reconnect_giottoImage = FALSE)
   }
 
 
   if(dataset == 'seqfish') {
-    Giotto:::wrap_msg('To be implemented \n')
+    wrap_msg('To be implemented \n')
   }
 
   if(dataset == 'starmap') {
-    mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/3D_starmap/3DStarmapObject/', package = 'GiottoData'),
+    mini_gobject = loadGiotto(path_to_folder = system.file('/Mini_datasets/3D_starmap/3DStarmapObject/', package = 'GiottoData'),
                               python_path = python_path)
     }
 
   if(dataset == 'spatialgenomics') {
-    mini_gobject = Giotto::loadGiotto(path_to_folder = system.file('/Mini_datasets/SpatialGenomics/SpatialGenomicsObject/', package = 'GiottoData'),
+    mini_gobject = loadGiotto(path_to_folder = system.file('/Mini_datasets/SpatialGenomics/SpatialGenomicsObject/', package = 'GiottoData'),
                               python_path = python_path)
   }
 
 
   # 1. change default instructions
-  identified_python_path = Giotto:::set_giotto_python_path(python_path = python_path)
-  mini_gobject = Giotto::changeGiottoInstructions(gobject = mini_gobject,
+  identified_python_path = set_giotto_python_path(python_path = python_path)
+  mini_gobject = changeGiottoInstructions(gobject = mini_gobject,
                                           params = c('python_path', 'show_plot', 'return_plot', 'save_plot', 'save_dir'),
                                           new_values = c(identified_python_path, TRUE, FALSE, FALSE, NA))
 
@@ -121,7 +121,7 @@ getSpatialDataset = function(dataset = c('ST_OB1',
                                                      'sg_mini_kidney'))
 
   # check operating system first
-  os_specific_system = Giotto:::get_os()
+  os_specific_system = get_os()
 
   #if(os_specific_system == 'windows') {
   #  stop('This function is currently not supported on windows systems,
@@ -165,7 +165,7 @@ getSpatialDataset = function(dataset = c('ST_OB1',
   selection = datasets_file[['dataset']] == sel_dataset
   selected_dataset_info = datasets_file[selection,]
   if(verbose) {
-    Giotto:::wrap_msg('Selected dataset links for: ', sel_dataset, ' \n \n')
+    wrap_msg('Selected dataset links for: ', sel_dataset, ' \n \n')
     print(selected_dataset_info)
   }
 
@@ -173,12 +173,12 @@ getSpatialDataset = function(dataset = c('ST_OB1',
 
   # get url to expression matrix and download
   if(verbose) {
-    Giotto:::wrap_msg("\n \n Download expression matrix: \n")
+    wrap_msg("\n \n Download expression matrix: \n")
   }
   expr_matrix_url = selected_dataset_info[['expr_matrix']]
 
   if(expr_matrix_url == "") {
-    Giotto:::wrap_msg('\n No expression found, skip this step \n')
+    wrap_msg('\n No expression found, skip this step \n')
   } else {
 
     expr_matrix_url = unlist(strsplit(expr_matrix_url, split = '\\|'))
@@ -188,7 +188,7 @@ getSpatialDataset = function(dataset = c('ST_OB1',
       mydestfile = paste0(directory,'/', myfilename)
 
       if(dryrun) {
-        Giotto:::wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
+        wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
       } else {
         utils::download.file(url = url, destfile = mydestfile, ...)
       }
@@ -203,13 +203,13 @@ getSpatialDataset = function(dataset = c('ST_OB1',
 
   # get url to spatial locations and download
   if(verbose) {
-    Giotto:::wrap_msg("\n \n Download spatial locations: \n")
+    wrap_msg("\n \n Download spatial locations: \n")
   }
 
   spatial_locs_url = selected_dataset_info[['spatial_locs']]
 
   if(spatial_locs_url == "") {
-    Giotto:::wrap_msg('\n No spatial locations found, skip this step \n')
+    wrap_msg('\n No spatial locations found, skip this step \n')
   } else {
 
     spatial_locs_url = unlist(strsplit(spatial_locs_url, split = '\\|'))
@@ -219,7 +219,7 @@ getSpatialDataset = function(dataset = c('ST_OB1',
       mydestfile = paste0(directory,'/', myfilename)
 
       if(dryrun) {
-        Giotto:::wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
+        wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
       } else {
         utils::download.file(url = url, destfile = mydestfile, ...)
       }
@@ -232,14 +232,14 @@ getSpatialDataset = function(dataset = c('ST_OB1',
 
   # get url(s) to additional metadata files and download
   if(verbose) {
-    Giotto:::wrap_msg("\n \n Download metadata: \n")
+    wrap_msg("\n \n Download metadata: \n")
   }
 
   #metadata_url = selected_dataset_info[['metadata']][[1]]
   metadata_url = selected_dataset_info[['metadata']]
 
   if(metadata_url == "") {
-    Giotto:::wrap_msg('\n No metadata found, skip this step \n')
+    wrap_msg('\n No metadata found, skip this step \n')
   } else {
 
     metadata_url = unlist(strsplit(metadata_url, split = '\\|'))
@@ -249,7 +249,7 @@ getSpatialDataset = function(dataset = c('ST_OB1',
       mydestfile = paste0(directory,'/', myfilename)
 
       if(dryrun) {
-        Giotto:::wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
+        wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
       } else {
         utils::download.file(url = url, destfile = mydestfile, ...)
       }
@@ -265,11 +265,11 @@ getSpatialDataset = function(dataset = c('ST_OB1',
   spatial_seg_url = selected_dataset_info[['segmentations']]
 
   if(spatial_seg_url == "") {
-    # Giotto:::wrap_msg('\n No segmentations found, skip this step \n')
+    # wrap_msg('\n No segmentations found, skip this step \n')
   } else {
 
     if(verbose) {
-      Giotto:::wrap_msg("\n \n Download segmentations: \n")
+      wrap_msg("\n \n Download segmentations: \n")
     }
 
     spatial_seg_url = unlist(strsplit(spatial_seg_url, split = '\\|'))
@@ -279,7 +279,7 @@ getSpatialDataset = function(dataset = c('ST_OB1',
       mydestfile = paste0(directory,'/', myfilename)
 
       if(dryrun) {
-        Giotto:::wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
+        wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
       } else {
         utils::download.file(url = url, destfile = mydestfile, ...)
       }
