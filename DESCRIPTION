@@ -24,6 +24,6 @@ Imports:
     data.table (>= 1.14.0),
     terra (>= 1.5-12)
 Remotes:
-    drieslab/GiottoClass
+    drieslab/GiottoClass,
     drieslab/GiottoUtils
 RoxygenNote: 7.2.3

@@ -23,47 +23,34 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 
 
   dataset = match.arg(dataset, choices = c('visium', 'seqfish', 'starmap', 'vizgen', 'cosmx', 'spatialgenomics'))
 
-
-  if(dataset == 'visium') {
-    mini_gobject = loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/VisiumObject/', package = 'GiottoData'),
-                              python_path = python_path,
-                              reconnect_giottoImage = FALSE)
-  }
-
-
-  if(dataset == 'vizgen') {
-    mini_gobject = loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'),
-                              python_path = python_path,
-                              reconnect_giottoImage = FALSE)
-  }
-
-  if(dataset == 'cosmx') {
-    mini_gobject = loadGiotto(path_to_folder = system.file('/Mini_datasets/CosMx/CosMxObject/', package = 'GiottoData'),
-                              python_path = python_path,
-                              reconnect_giottoImage = FALSE)
-  }
-
-
-  if(dataset == 'seqfish') {
-    wrap_msg('To be implemented \n')
-  }
-
-  if(dataset == 'starmap') {
-    mini_gobject = loadGiotto(path_to_folder = system.file('/Mini_datasets/3D_starmap/3DStarmapObject/', package = 'GiottoData'),
-                              python_path = python_path)
-    }
-
-  if(dataset == 'spatialgenomics') {
-    mini_gobject = loadGiotto(path_to_folder = system.file('/Mini_datasets/SpatialGenomics/SpatialGenomicsObject/', package = 'GiottoData'),
-                              python_path = python_path)
-  }
+  mini_gobject = switch(
+    dataset,
+    'visium' = loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/VisiumObject/', package = 'GiottoData'),
+                          python_path = python_path,
+                          reconnect_giottoImage = FALSE),
+    'vizgen' = loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'),
+                          python_path = python_path,
+                          reconnect_giottoImage = FALSE),
+    'cosmx' = loadGiotto(path_to_folder = system.file('/Mini_datasets/CosMx/CosMxObject/', package = 'GiottoData'),
+                         python_path = python_path,
+                         reconnect_giottoImage = FALSE),
+    'seqfish' = {
+      wrap_msg('To be implemented \n')
+      return(invisible(NULL)) # exit early
+    },
+    'starmap' = loadGiotto(path_to_folder = system.file('/Mini_datasets/3D_starmap/3DStarmapObject/', package = 'GiottoData'),
+                           python_path = python_path),
+    'spatialgenomics' = loadGiotto(path_to_folder = system.file('/Mini_datasets/SpatialGenomics/SpatialGenomicsObject/', package = 'GiottoData'),
+                                   python_path = python_path)
+  )
 
 
   # 1. change default instructions
-  identified_python_path = set_giotto_python_path(python_path = python_path)
+  # Only mini object-specific instructions should be updated here. The python
+  # path update was taken care of inside of `loadGiotto()`
   mini_gobject = changeGiottoInstructions(gobject = mini_gobject,
-                                          params = c('python_path', 'show_plot', 'return_plot', 'save_plot', 'save_dir'),
-                                          new_values = c(identified_python_path, TRUE, FALSE, FALSE, NA))
+                                          params = c('show_plot', 'return_plot', 'save_plot', 'save_dir'),
+                                          new_values = c(TRUE, FALSE, FALSE, NA))
 
   return(mini_gobject)
 
