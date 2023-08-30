@@ -19,35 +19,35 @@ viz = loadGiottoMini('vizgen')
 # 1. extract subobjects ####
 # ----------------- #
 
-spat_locs = get_spatial_locations(gobject = viz,
-                                  spat_unit = 'aggregate',
-                                  spat_loc_name = 'raw',
-                                  output = 'spatLocsObj')
-
-del_net = get_spatialNetwork(gobject = viz,
-                             spat_unit = 'aggregate',
-                             output = 'spatialNetworkObj',
-                             name = 'Delaunay_network')
-
-knn_net = get_spatialNetwork(gobject = viz,
-                             spat_unit = 'aggregate',
-                             output = 'spatialNetworkObj',
-                             name = 'kNN_network')
-
-expr_vals_raw = get_expression_values(gobject = viz,
-                                      spat_unit = 'aggregate',
-                                      values = 'raw',
-                                      output = 'exprObj')
-
-expr_vals_norm = get_expression_values(gobject = viz,
-                                       spat_unit = 'aggregate',
-                                       values = 'normalized',
-                                       output = 'exprObj')
-
-mg_enr = get_spatial_enrichment(gobject = viz,
-                                enrichm_name = 'cluster_metagene',
+spat_locs = getSpatialLocations(gobject = viz,
                                 spat_unit = 'aggregate',
-                                output = 'spatEnrObj')
+                                spat_loc_name = 'raw',
+                                output = 'spatLocsObj')
+
+del_net = getSpatialNetwork(gobject = viz,
+                            spat_unit = 'aggregate',
+                            output = 'spatialNetworkObj',
+                            name = 'Delaunay_network')
+
+knn_net = getSpatialNetwork(gobject = viz,
+                            spat_unit = 'aggregate',
+                            output = 'spatialNetworkObj',
+                            name = 'kNN_network')
+
+expr_vals_raw = getExpression(gobject = viz,
+                              spat_unit = 'aggregate',
+                              values = 'raw',
+                              output = 'exprObj')
+
+expr_vals_norm = getExpression(gobject = viz,
+                               spat_unit = 'aggregate',
+                               values = 'normalized',
+                               output = 'exprObj')
+
+mg_enr = getSpatialEnrichment(gobject = viz,
+                              enrichm_name = 'cluster_metagene',
+                              spat_unit = 'aggregate',
+                              output = 'spatEnrObj')
 
 # # Do not replace these until the naming length issue is resolved
 # # (Issue where feat_ID_uniq -> feat_ID_un after loadGiotto)
@@ -57,36 +57,36 @@ mg_enr = get_spatial_enrichment(gobject = viz,
 #
 # gpoints = viz@feat_info$rna
 
-cm = Giotto:::get_cell_metadata(gobject = viz,
-                                spat_unit = 'aggregate',
-                                feat_type = 'rna',
-                                output = 'cellMetaObj')
+cm = getCellMetadata(gobject = viz,
+                     spat_unit = 'aggregate',
+                     feat_type = 'rna',
+                     output = 'cellMetaObj')
 
-fm = Giotto:::get_feature_metadata(gobject = viz,
-                                   spat_unit = 'aggregate',
-                                   feat_type = 'rna',
-                                   output = 'featMetaObj')
-
-dim_red_umap = get_dimReduction(gobject = viz,
-                                spat_unit = 'aggregate',
-                                feat_type = 'rna',
-                                reduction_method = 'umap',
-                                name = 'umap',
-                                output = 'dimObj')
-
-dim_red_pca = get_dimReduction(gobject = viz,
-                               spat_unit = 'aggregate',
-                               feat_type = 'rna',
-                               reduction_method = 'pca',
-                               name = 'pca',
-                               output = 'dimObj')
-
-nn = get_NearestNetwork(gobject = viz,
+fm = getFeatureMetadata(gobject = viz,
                         spat_unit = 'aggregate',
                         feat_type = 'rna',
-                        nn_network_to_use = 'sNN',
-                        network_name = 'sNN.pca',
-                        output = 'nnNetObj')
+                        output = 'featMetaObj')
+
+dim_red_umap = getDimReduction(gobject = viz,
+                               spat_unit = 'aggregate',
+                               feat_type = 'rna',
+                               reduction_method = 'umap',
+                               name = 'umap',
+                               output = 'dimObj')
+
+dim_red_pca = getDimReduction(gobject = viz,
+                              spat_unit = 'aggregate',
+                              feat_type = 'rna',
+                              reduction_method = 'pca',
+                              name = 'pca',
+                              output = 'dimObj')
+
+nn = getNearestNetwork(gobject = viz,
+                       spat_unit = 'aggregate',
+                       feat_type = 'rna',
+                       nn_network_to_use = 'sNN',
+                       network_name = 'sNN.pca',
+                       output = 'nnNetObj')
 
 # images
 DAPI_z0_image_path = paste0(data_path, '/', 'images/mini_dataset_dapi_z0.jpg')
@@ -140,11 +140,11 @@ saveRDS(dim_red_pca, file = paste0(miniobj_path, '/', 'dimObj/viz_agg_pca.RDS'))
 saveRDS(dim_red_umap, file = paste0(miniobj_path, '/', 'dimObj/viz_agg_umap.RDS'))
 
 # giottoPoints - do not replace until feat_ID_uniq issue is resolved
-# gpoints = Giotto::wrap(gpoints)
+# gpoints = GiottoClass::wrap(gpoints)
 # saveRDS(gpoints, file = paste0(miniobj_path, '/', 'giottoPoints/viz_agg_gpoints.RDS'))
 
 # giottoPolygon - do not replace until feat_ID_uniq issue is resolved
-# gpoly = Giotto::wrap(gpoly)
+# gpoly = GiottoClass::wrap(gpoly)
 # saveRDS(gpoly, file = paste0(miniobj_path, '/', 'giottoPolygon/viz_agg_gpoly.RDS'))
 
 # largeImages
