@@ -1,7 +1,7 @@
 Package: GiottoData
 Type: Package
 Title: Datasets for Giotto
-Version: 0.2.6
+Version: 0.2.6.1
 Author: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
 		 role = c("aut", "cre"))
@@ -23,7 +23,11 @@ Depends:
 Imports:
     data.table (>= 1.14.0),
     terra (>= 1.5-12)
+Suggests:
+    GiottoVisuals,
+    Giotto
 Remotes:
     drieslab/GiottoClass,
-    drieslab/GiottoUtils
+    drieslab/GiottoUtils,
+    drieslab/Giotto@suite_modular
 RoxygenNote: 7.2.3

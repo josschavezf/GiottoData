@@ -23,16 +23,16 @@ loadSubObjectMini = function(x, idx = 1L) {
     original_path = load_data@file_path
     new_path = gsub(pattern = '.*[/]GiottoData/', replacement = '', x = original_path)
     new_path = paste0(gDataDir(), new_path)
-    load_data = reconnect_giottoLargeImage(giottoLargeImage = load_data,
-                                           image_path = new_path)
+    load_data = GiottoClass::reconnect_giottoLargeImage(giottoLargeImage = load_data,
+                                                        image_path = new_path)
   }
 
   if(x == 'giottoImage') {
     original_path = load_data@file_path
     new_path = gsub(pattern = '.*[/]GiottoData/', replacement = '', x = original_path)
     new_path = paste0(gDataDir(), new_path)
-    load_data = reconnect_giottoImage_MG(giottoImage = load_data,
-                                         image_path = new_path)
+    load_data = GiottoClass::reconnect_giottoImage_MG(giottoImage = load_data,
+                                                      image_path = new_path)
   }
 
   return(load_data)
@@ -75,10 +75,10 @@ list_subobject_mini = function() {
 
   avail_obj = list.files(path = miniobj_path, full.names = TRUE, recursive = TRUE)
   avail_obj_dt = data.table::data.table(file = basename(avail_obj), path = avail_obj)
-  avail_obj_dt[, type := gsub(pattern = paste0(miniobj_path, '/'), replacement = '', x = path)]
-  avail_obj_dt[, type := gsub(pattern = '[/].*', replacement = '', x = type)]
+  avail_obj_dt[, 'type' := gsub(pattern = paste0(miniobj_path, '/'), replacement = '', x = path)]
+  avail_obj_dt[, 'type' := gsub(pattern = '[/].*', replacement = '', x = type)]
 
-  avail_obj_dt[, index := seq_along(path), by = type]
+  avail_obj_dt[, 'index' := seq_along(path), by = type]
 
   return(avail_obj_dt)
 
