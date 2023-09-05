@@ -1,14 +1,14 @@
 
 ## MINI VIZGEN script and dataset preparation ##
 
-library(Giotto)
 # devtools::load_all(path = '/Users/rubendries/Packages/R_Packages/Giotto/')
 # devtools::load_all(path = '/Users/rubendries/r_packages/Giotto/')
 
-library(GiottoData) # devtools::load_all()
-
 library(terra)
 library(data.table)
+library(GiottoClass)
+library(GiottoVisuals)
+library(Giotto)
 
 
 
@@ -79,8 +79,9 @@ showGiottoSpatialInfo(vizsubc)
 vizsubc = addSpatialCentroidLocations(gobject = vizsubc,
                                       poly_info = paste0('z',0:1),
                                       provenance = list('z0', 'z1'),
-                                      return_gobject = T)
+                                      return_gobject = TRUE)
 showGiottoSpatLocs(vizsubc)
+
 
 
 # 2. add image ####
@@ -222,6 +223,8 @@ spatInSituPlotPoints(vizsubc,
                      polygon_line_size = 0.1,
                      polygon_fill = 'total_expr',
                      polygon_fill_as_factor = F,
+                     polygon_fill_gradient_style = 'sequential',
+                     polygon_alpha = 1,
                      coord_fix_ratio = T)
 
 
@@ -349,9 +352,13 @@ vizsubc = createSpatialWeightMatrix(vizsubc,
                                     return_gobject = TRUE)
 
 pDataDT(vizsubc, 'aggregate')
-spatPlot(gobject = vizsubc, spat_unit = 'aggregate', show_network = T,
-         network_color = 'lightgray', spatial_network_name = 'Delaunay_network',
-         point_size = 2.5, cell_color = 'leiden_clus')
+spatPlot(gobject = vizsubc,
+         spat_unit = 'aggregate',
+         show_network = T,
+         network_color = 'lightgray',
+         spatial_network_name = 'Delaunay_network',
+         point_size = 2.5,
+         cell_color = 'leiden_clus')
 
 
 ## 9.1 spatial genes ####
@@ -361,8 +368,11 @@ spatFeatPlot2D_single(vizsubc,
                spat_unit = 'aggregate',
                expression_values = 'scaled',
                feats = km_spatialfeats[1:4]$feats,
-               point_shape = 'border', point_border_stroke = 0.1,
-               show_network = F, network_color = 'lightgrey', point_size = 2.5,
+               point_shape = 'border',
+               point_border_stroke = 0.1,
+               show_network = F,
+               network_color = 'lightgrey',
+               point_size = 2.5,
                cow_n_col = 2)
 
 ## 9.2 spatial co-expression ####
@@ -375,25 +385,33 @@ spat_cor_netw_DT = detectSpatialCorFeats(vizsubc,
                                          subset_feats = ext_spatial_genes)
 
 # cluster and visualize spatial co-expression genes
-spat_cor_netw_DT = clusterSpatialCorFeats(spat_cor_netw_DT, name = 'spat_netw_clus', k = 5)
+spat_cor_netw_DT = clusterSpatialCorFeats(spat_cor_netw_DT,
+                                          name = 'spat_netw_clus',
+                                          k = 5)
 
 heatmSpatialCorFeats(vizsubc,
                      spatCorObject = spat_cor_netw_DT,
                      use_clus_name = 'spat_netw_clus',
                      heatmap_legend_param = list(title = NULL),
-                     save_param = list(base_height = 6, base_width = 8, units = 'cm'))
+                     save_param = list(base_height = 6,
+                                       base_width = 8,
+                                       units = 'cm'))
 
 # create and visualize metafeatures
 testweight = getBalancedSpatCoexpressionFeats(spat_cor_netw_DT, rank = 'weighted', maximum = 30)
 
-vizsubc = createMetafeats(vizsubc, spat_unit = 'aggregate',
+vizsubc = createMetafeats(vizsubc,
+                          spat_unit = 'aggregate',
                           feat_clusters = testweight,
                           name = 'cluster_metagene')
 
-spatCellPlot(vizsubc, spat_unit = 'aggregate',
+spatCellPlot(vizsubc,
+             spat_unit = 'aggregate',
              spat_enr_names = 'cluster_metagene',
              cell_annotation_values = as.character(c(1:6)),
-             point_size = 2, cow_n_col = 3, save_param = list(base_width = 15))
+             gradient_style = 's',
+             point_size = 1.8,
+             save_param = list(base_width = 15))
 
 
 
@@ -416,20 +434,22 @@ cellProximityHeatmap(gobject = vizsubc,
                      color_breaks = c(-1.5, 0, 1.5),
                      color_names = c('blue', 'white', 'red'))
 
-spatInSituPlotPoints(vizsubc,
-                     spat_unit = 'aggregate',
-                     show_image = T,
-                     largeImage_name = 'dapi_z0',
-                     feats = list('rna' = c("Htr1b", "Ackr1", "Epha7")),
-                     feats_color_code = c("Htr1b" = 'green', 'Ackr1' = 'blue', 'Epha7' = 'red'),
-                     point_size = 0.75,
-                     show_polygon = TRUE,
-                     polygon_feat_type = 'aggregate',
-                     polygon_color = 'white',
-                     polygon_line_size = 0.1,
-                     polygon_fill = 'leiden_clus',
-                     polygon_fill_as_factor = T,
-                     coord_fix_ratio = 1)
+spatInSituPlotPoints(
+  vizsubc,
+  spat_unit = 'aggregate',
+  show_image = T,
+  largeImage_name = 'dapi_z0',
+  feats = list('rna' = c("Htr1b", "Ackr1", "Epha7")),
+  feats_color_code = c("Htr1b" = 'green', 'Ackr1' = 'blue', 'Epha7' = 'red'),
+  point_size = 0.75,
+  show_polygon = TRUE,
+  polygon_feat_type = 'aggregate',
+  polygon_color = 'white',
+  polygon_line_size = 0.1,
+  polygon_fill = 'leiden_clus',
+  polygon_fill_as_factor = T,
+  coord_fix_ratio = 1
+)
 
 showGiottoSpatialInfo(vizsubc)
 
@@ -437,7 +457,8 @@ showGiottoSpatialInfo(vizsubc)
 spatInSituPlotDensity(vizsubc,
                       polygon_feat_type = 'aggregate',
                       feats = c("Htr1b", "Ackr1", "Epha7"),
-                      alpha = 0.5, polygon_color = 'white')
+                      alpha = 0.5,
+                      polygon_color = 'white')
 
 spatInSituPlotHex(vizsubc,
                   polygon_feat_type = 'aggregate',
