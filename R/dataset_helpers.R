@@ -60,10 +60,14 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 
 
 
   # 1. change default instructions
-  identified_python_path = Giotto:::set_giotto_python_path(python_path = python_path)
-  mini_gobject = Giotto::changeGiottoInstructions(gobject = mini_gobject,
-                                          params = c('python_path', 'show_plot', 'return_plot', 'save_plot', 'save_dir'),
-                                          new_values = c(identified_python_path, TRUE, FALSE, FALSE, NA))
+  identified_python_path = set_giotto_python_path(python_path = python_path)
+  print(identified_python_path)
+  mini_gobject = changeGiottoInstructions(gobject = mini_gobject,
+                                          params = c('show_plot', 'return_plot', 'save_plot', 'save_dir'),
+                                          new_values = c(TRUE, FALSE, FALSE, NA)
+                                          #params = c('python_path', 'show_plot', 'return_plot', 'save_plot', 'save_dir'),
+                                          #new_values = c(identified_python_path, TRUE, FALSE, FALSE, getwd())
+                                          )
 
   return(mini_gobject)
 
