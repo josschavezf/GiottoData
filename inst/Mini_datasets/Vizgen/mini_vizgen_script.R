@@ -57,11 +57,11 @@ tx_dt = data.table::fread(tx_path)
 
 boundary_path = paste0(data_path, '/cell_boundaries/')
 
-z0_polygon_DT = fread(paste0(boundary_path, '/', 'z0_polygons.gz'))
+z0_polygon_DT = data.table::fread(paste0(boundary_path, '/', 'z0_polygons.gz'))
 z0_polygons = createGiottoPolygonsFromDfr(name = 'z0',
                                           segmdfr = z0_polygon_DT)
 
-z1_polygon_DT = fread(paste0(boundary_path, '/', 'z1_polygons.gz'))
+z1_polygon_DT = data.table::fread(paste0(boundary_path, '/', 'z1_polygons.gz'))
 z1_polygons = createGiottoPolygonsFromDfr(name = 'z1',
                                           segmdfr = z1_polygon_DT)
 
@@ -451,7 +451,7 @@ format(object.size(vizsubc), units = 'Mb')
 
 # you need to use your local GiottoData repo
 # giottodata_repo = '/Users/rubendries/Packages/R_Packages/GiottoData/inst/Mini_datasets/'
-giottodata_repo = '/Users/rubendries/r_packages/GiottoData//inst/Mini_datasets/'
+giottodata_repo = './inst/Mini_datasets/'
 
 saveGiotto(vizsubc,
            foldername = 'VizgenObject',
