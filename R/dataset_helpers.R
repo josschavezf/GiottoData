@@ -376,15 +376,20 @@ listSODBDatasetExperimentNames <- function(dataset_name = NULL){
 #' 2. Open a terminal.
 #' 
 #' 3. Clone the source code and change into the pysodb directory.
+#' 
 #' ```
 #' \dontrun{git clone https://github.com/TencentAILabHealthcare/pysodb.git}
 #' \dontrun{cd pysodb}
 #' ```
+#' 
 #' 4. Activate the giotto environment.
+#' 
 #' ```
 #' \dontrun{conda activate your/path/to/giotto_env}
 #' ```
+#' 
 #' 5. Install pysodb as a dependency or third-party package with pip:
+#' 
 #' ```
 #' \dontrun{pip install .}
 #' ```
