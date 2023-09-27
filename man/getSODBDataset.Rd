@@ -29,8 +29,11 @@ Run \preformatted{listSODBDatasetExperimentNames()} to find names of
 experiments associate with a provided dataset.
 
 This function will not run if pysodb is not installed in 
-the active conda environment. To install within the
-giotto environment, follow the steps below: 
+the active conda environment. It will prompt a user to install
+pysodb automatically if it is not detected.
+
+*Note that manual installation is more stable.*
+To install manually within the giotto environment, follow the steps below: 
 
 1. Run \preformatted{checkGiottoEnvironment()} in R to find 
 the installation location of the Giotto conda environment.

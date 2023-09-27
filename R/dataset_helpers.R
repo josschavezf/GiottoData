@@ -301,7 +301,7 @@ listSODBDatasetNames <- function(category = c("All",
                                               "Spatial Metabolomics",
                                               "Spatial Genomics",
                                               "Spatial MultiOmics")){
-  
+  check_py_for_pysodb()
   sel_category = match.arg(arg = category, choices = c( "All",
                                                         "Spatial Transcriptomics", 
                                                         "Spatial Proteomics",
@@ -332,6 +332,7 @@ listSODBDatasetNames <- function(category = c("All",
 #' @export 
 listSODBDatasetExperimentNames <- function(dataset_name = NULL){
   
+  check_py_for_pysodb()
   if(is.null(dataset_name)) {
     stop(GiottoUtils::wrap_txt("A dataset name must be provided. 
                                Run `listSODBDatasetNames()` for dataset names.", 
@@ -367,8 +368,11 @@ listSODBDatasetExperimentNames <- function(dataset_name = NULL){
 #' experiments associate with a provided dataset.
 #' 
 #' This function will not run if pysodb is not installed in 
-#' the active conda environment. To install within the
-#' giotto environment, follow the steps below: 
+#' the active conda environment. It will prompt a user to install
+#' pysodb automatically if it is not detected.
+#' 
+#' *Note that manual installation is more stable.*
+#' To install manually within the giotto environment, follow the steps below: 
 #' 
 #' 1. Run \preformatted{checkGiottoEnvironment()} in R to find 
 #' the installation location of the Giotto conda environment.
@@ -404,40 +408,7 @@ listSODBDatasetExperimentNames <- function(dataset_name = NULL){
 #' @export
 getSODBDataset <- function(dataset_name = NULL,
                            experiment_name = "default"){
-  
-  if(!reticulate::py_module_available("pysodb")){
-
-    install_error_message = "Python package `pysodb` must be installed 
-                             within the active python environment.
-                             
-                             Use the following instructions to do so 
-                             within the Giotto environment: 
-                             
-                             1. Run checkGiottoEnvironment() in R to find 
-                             the installation location of the Giotto conda environment.
-
-                             2. Open a terminal.
-
-                             3. Clone the source code and change into the pysodb directory.
-                             ```
-                             git clone https://github.com/TencentAILabHealthcare/pysodb.git
-                             cd pysodb
-                             ```
-                             
-                             4. Activate the giotto environment.
-                             ```
-                             conda activate your/path/to/giotto_env
-                             ```
-                             5. Install pysodb as a dependency or third-party package with pip:
-                             ```
-                             pip install .
-                             ```
-                             "
-
-    stop(GiottoUtils::wrap_txt(install_error_message, 
-                               errWidth = TRUE))
-    
-  }
+  check_py_for_pysodb()
   if(is.null(dataset_name)) {
     stop(GiottoUtils::wrap_txt("A dataset name must be provided.
                                Run `listSODBDatasetNames()` for dataset names.", 
@@ -467,4 +438,71 @@ getSODBDataset <- function(dataset_name = NULL,
 
   return (gobject)
 
+}
+
+#' @title addInterfaceToPySODB
+#' @title addInterfaceToPySODB
+#' @param env_to_use conda environment into which PySODB should be installed.
+#' @details 
+#' Installs PySODB into `env_to_use`.
+#' *Note that manual installation is more stable; see \dontrun{getSODBDataset}.*
+#' @export
+addInterfaceToPySODB <- function(env_to_use = "giotto_env"){
+  check_py_for_pysodb(env_to_use = env_to_use)
+  cat(paste0("PySODB installed within ", env_to_use))
+}
+
+
+#' @title check_py_for_pysodb
+#' @name check_py_for_pysodb
+#' @param env_to_use conda environment in which the installation of PySODB should be checked.
+#' @details 
+#' Checks python environment for pysodb.
+#' Prompts user to install if not found.
+#' *Note that manual installation is more stable; see \dontrun{getSODBDataset}.*
+#' @export
+check_py_for_pysodb <- function(env_to_use = NULL){
+
+  all_py_pkgs = reticulate::py_list_packages()$package
+
+  if(!"pysodb" %in% all_py_pkgs){
+    install_pysodb = "Python module pysodb is required and not installed.\nEnter 0 to skip installation and quit.\n"
+    install_pysodb = paste0(install_pysodb,"Enter any other number to install pysodb to the *giotto_env* python environment:\n\n")
+    resp = as.integer(readline(prompt = install_pysodb))
+
+    if(resp == 0){
+      install_error_message = "Python package `pysodb` must be installed 
+                               within the active python environment.
+
+                               Use the following instructions to do so 
+                               within the Giotto environment: 
+
+                               1. Run checkGiottoEnvironment() in R to find 
+                               the installation location of the Giotto conda environment.
+
+                               2. Open a terminal.
+
+                               3. Clone the source code and change into the pysodb directory.
+                               ```
+                               git clone https://github.com/TencentAILabHealthcare/pysodb.git
+                               cd pysodb
+                               ```
+
+                               4. Activate the giotto environment.
+                               ```
+                               conda activate your/path/to/giotto_env
+                               ```
+                               5. Install pysodb as a dependency or third-party package with pip:
+                               ```
+                               pip install .
+                               ```
+                               "
+
+      stop(GiottoUtils::wrap_txt(install_error_message, 
+                                 errWidth = TRUE))
+    } else{
+      config <- reticulate::py_discover_config(use_environment=env_to_use)
+      system2(config$python, c("-m", "pip", "install", "git+https://github.com/TencentAILabHealthcare/pysodb.git"))
+    }
+  }
 }
