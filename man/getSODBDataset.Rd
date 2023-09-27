@@ -24,37 +24,33 @@ This function will write an anndata h5ad file for a provided dataset
 name to the current working directory and will then  convert
 the h5ad into a Giotto Object.
 
-Run \dontrun{listSODBDatasetNames()} to find names of SODB datasets.
-Run \dontrun{listSODBDatasetExperimentNames()} to find names of
+Run \preformatted{listSODBDatasetNames()} to find names of SODB datasets.
+Run \preformatted{listSODBDatasetExperimentNames()} to find names of
 experiments associate with a provided dataset.
 
 This function will not run if pysodb is not installed in 
 the active conda environment. To install within the
 giotto environment, follow the steps below: 
 
-1. Run \dontrun{checkGiottoEnvironment()} in R to find 
+1. Run \preformatted{checkGiottoEnvironment()} in R to find 
 the installation location of the Giotto conda environment.
 
 2. Open a terminal.
 
 3. Clone the source code and change into the pysodb directory.
 
-```
-\dontrun{git clone https://github.com/TencentAILabHealthcare/pysodb.git}
-\dontrun{cd pysodb}
-```
+\preformatted{
+  git clone https://github.com/TencentAILabHealthcare/pysodb.git
+  cd pysodb
+}
 
 4. Activate the giotto environment.
 
-```
-\dontrun{conda activate your/path/to/giotto_env}
-```
+\preformatted{conda activate your/path/to/giotto_env}
 
 5. Install pysodb as a dependency or third-party package with pip:
 
-```
-\dontrun{pip install .}
-```
+\preformatted{pip install .}
 }
 \examples{
 \dontrun{

@@ -17,5 +17,5 @@ listSODBDatasetExperimentNames
 Returns a vector containing the names of experiments associated with
 the provided `dataset_name`. 
 
-Run \dontrun{listSODBDatasetNames()} to find names of SODB datasets.
+Run \preformatted{listSODBDatasetNames()} to find names of SODB datasets.
 }
