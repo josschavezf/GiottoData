@@ -17,8 +17,8 @@ By default, the first experiment will be used.}
 getSODBDataset
 }
 \details{
-Interface with TenCent's Spatial Omics DataBase (SODB) using the
-python extension, pysodb.
+Interface with the Spatial Omics DataBase (SODB) using the
+python extension, pysodb, from TenCent.
 
 This function will write an anndata h5ad file for a provided dataset
 name to the current working directory and will then  convert
