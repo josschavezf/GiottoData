@@ -24,8 +24,8 @@ This function will write an anndata h5ad file for a provided dataset
 name to the current working directory and will then  convert
 the h5ad into a Giotto Object.
 
-Run `listSODBDatasetNames()` to find names of SODB datasets.
-Run `listSODBDatasetExperimentNames()` to find names of
+Run \dontrun{listSODBDatasetNames()} to find names of SODB datasets.
+Run \dontrun{listSODBDatasetExperimentNames()} to find names of
 experiments associate with a provided dataset.
 }
 \examples{

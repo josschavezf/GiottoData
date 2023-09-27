@@ -379,7 +379,40 @@ listSODBDatasetExperimentNames <- function(dataset_name = NULL){
 #' @export
 getSODBDataset <- function(dataset_name = NULL,
                            experiment_name = "default"){
+  
+  if(!reticulate::py_module_available("pysodb")){
 
+    install_error_message = "Python package `pysodb` must be installed 
+                             within the active python environment.
+                             
+                             Use the following instructions to do so 
+                             within the Giotto environment: 
+                             
+                             1. Run checkGiottoEnvironment() in R to find 
+                             the installation location of the Giotto conda environment.
+
+                             2. Open a terminal.
+
+                             3. Clone the source code and change into the pysodb directory.
+                             ```
+                             git clone https://github.com/TencentAILabHealthcare/pysodb.git
+                             cd pysodb
+                             ```
+                             
+                             4. Activate the giotto environment.
+                             ```
+                             conda activate your/path/to/giotto_env
+                             ```
+                             5. Install pysodb as a dependency or third-party package with pip:
+                             ```
+                             pip install .
+                             ```
+                             "
+
+    stop(GiottoUtils::wrap_txt(install_error_message, 
+                               errWidth = TRUE))
+    
+  }
   if(is.null(dataset_name)) {
     stop(GiottoUtils::wrap_txt("A dataset name must be provided.
                                Run `listSODBDatasetNames()` for dataset names.", 
