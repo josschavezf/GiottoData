@@ -8,6 +8,9 @@
 #' is available (see \code{\link{listSubObjectMini}})
 #' @export
 loadSubObjectMini = function(x, idx = 1L) {
+  
+  # declare data.table variables
+  type = index = path = NULL
 
   avail_obj_dt = list_subobject_mini()
   data_path = avail_obj_dt[type == x & index == idx, path]
@@ -49,6 +52,9 @@ loadSubObjectMini = function(x, idx = 1L) {
 #' @param x subobject type (NULL lists all subobject types)
 #' @export
 listSubObjectMini = function(x = NULL) {
+  
+  # declare data.table variables
+  path = type = NULL
 
   avail_obj_dt = list_subobject_mini()
   avail_obj_dt_show = copy(avail_obj_dt)[, path := NULL]
@@ -70,6 +76,9 @@ listSubObjectMini = function(x = NULL) {
 #' for the external version which provides those functions.
 #' @keywords internal
 list_subobject_mini = function() {
+  
+  # declare data.table variables
+  path = type = NULL
 
   miniobj_path = paste0(gDataDir(), '/Mini_objects/subobjects')
 

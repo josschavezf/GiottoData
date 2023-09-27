@@ -9,7 +9,7 @@ Author: c(
 Maintainer: Ruben Dries <rubendries@gmail.com>
 Description: Stores information and scripts to work with, or load various
     different spatial datasets that can be used with the Giotto Suite workflow.
-    Also contains example mini Giotto subobjects
+    Also contains example mini Giotto subobjects.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -22,10 +22,10 @@ Depends:
     utils (>= 3.5.0)
 Imports:
     data.table (>= 1.14.0),
-    terra (>= 1.5-12)
 Suggests:
     GiottoVisuals,
-    Giotto
+    Giotto,
+    terra (>= 1.5-12)
 Remotes:
     drieslab/GiottoClass,
     drieslab/GiottoUtils,
