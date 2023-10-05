@@ -292,6 +292,10 @@ getSpatialDataset = function(dataset = c('ST_OB1',
 #' @title listSODBDatasetNames
 #' @name listSODBDatasetNames
 #' @param cateogry name of category for which dataset names will be listed. 
+#' @param env_to_use Python environment within which pysodb is installed.
+#' If it is not already installed, the user
+#' will be prompted to install `pysodb`
+#' DEFAULT: "giotto_env"
 #' @details Returns a vector containing the names of datasets associated with
 #' the provided `category`.
 #' @export 
@@ -300,8 +304,17 @@ listSODBDatasetNames <- function(category = c("All",
                                               "Spatial Proteomics",
                                               "Spatial Metabolomics",
                                               "Spatial Genomics",
-                                              "Spatial MultiOmics")){
-  check_py_for_pysodb()
+                                              "Spatial MultiOmics"),
+                                 env_to_use = "giotto_env"){
+  
+  pysodb_installed = Giotto::checkPythonPackage(package_name = "pysdob",
+                                                env_to_use = env_to_use)
+
+  if(!pysodb_installed) {
+    Giotto::checkPythonPackage(github_pacakge_url = "git+https://github.com/TencentAILabHealthcare/pysodb.git",
+                               env_to_use = env_to_use)
+  }
+
   sel_category = match.arg(arg = category, choices = c( "All",
                                                         "Spatial Transcriptomics", 
                                                         "Spatial Proteomics",
@@ -324,15 +337,27 @@ listSODBDatasetNames <- function(category = c("All",
 #' @name listSODBDatasetExperimentNames
 #' @param dataset_name name of dataset for which experiment names will be listed. 
 #'        Must exist within the SODB.
+#' @param env_to_use Python environment within which pysodb is installed.
+#' If it is not already installed, the user
+#' will be prompted to install `pysodb`
+#' DEFAULT: "giotto_env"
 #' @details 
 #' Returns a vector containing the names of experiments associated with
 #' the provided `dataset_name`. 
 #' 
 #' Run \preformatted{listSODBDatasetNames()} to find names of SODB datasets.
 #' @export 
-listSODBDatasetExperimentNames <- function(dataset_name = NULL){
+listSODBDatasetExperimentNames <- function(dataset_name = NULL,
+                                           env_to_use = "giotto_env"){
   
-  check_py_for_pysodb()
+  pysodb_installed = Giotto::checkPythonPackage(package_name = "pysdob",
+                                                env_to_use = env_to_use)
+
+  if(!pysodb_installed) {
+    Giotto::checkPythonPackage(github_pacakge_url = "git+https://github.com/TencentAILabHealthcare/pysodb.git",
+                               env_to_use = env_to_use)
+  }
+
   if(is.null(dataset_name)) {
     stop(GiottoUtils::wrap_txt("A dataset name must be provided. 
                                Run `listSODBDatasetNames()` for dataset names.", 
