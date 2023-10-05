@@ -4,11 +4,16 @@
 \alias{listSODBDatasetExperimentNames}
 \title{listSODBDatasetExperimentNames}
 \usage{
-listSODBDatasetExperimentNames(dataset_name = NULL)
+listSODBDatasetExperimentNames(dataset_name = NULL, env_to_use = "giotto_env")
 }
 \arguments{
 \item{dataset_name}{name of dataset for which experiment names will be listed. 
 Must exist within the SODB.}
+
+\item{env_to_use}{Python environment within which pysodb is installed.
+If it is not already installed, the user
+will be prompted to install `pysodb`
+DEFAULT: "giotto_env"}
 }
 \description{
 listSODBDatasetExperimentNames

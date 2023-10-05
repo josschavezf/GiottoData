@@ -6,10 +6,16 @@
 \usage{
 listSODBDatasetNames(
   category = c("All", "Spatial Transcriptomics", "Spatial Proteomics",
-    "Spatial Metabolomics", "Spatial Genomics", "Spatial MultiOmics")
+    "Spatial Metabolomics", "Spatial Genomics", "Spatial MultiOmics"),
+  env_to_use = "giotto_env"
 )
 }
 \arguments{
+\item{env_to_use}{Python environment within which pysodb is installed.
+If it is not already installed, the user
+will be prompted to install `pysodb`
+DEFAULT: "giotto_env"}
+
 \item{cateogry}{name of category for which dataset names will be listed.}
 }
 \description{

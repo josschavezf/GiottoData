@@ -4,7 +4,11 @@
 \alias{getSODBDataset}
 \title{getSODBDataset}
 \usage{
-getSODBDataset(dataset_name = NULL, experiment_name = "default")
+getSODBDataset(
+  dataset_name = NULL,
+  experiment_name = "default",
+  env_name = "giotto_env"
+)
 }
 \arguments{
 \item{dataset_name}{name of dataset to pull from the SODB. 
@@ -12,6 +16,10 @@ Must exist within the SODB.}
 
 \item{experiment_name}{name of one experiment associated with `dataset_name`
 By default, the first experiment will be used.}
+
+\item{env_name}{name of the conda environment within which
+pysodb is already installed, or within which installation
+of pysodb will be prompted}
 }
 \description{
 getSODBDataset
@@ -29,7 +37,7 @@ Run \preformatted{listSODBDatasetExperimentNames()} to find names of
 experiments associate with a provided dataset.
 
 This function will not run if pysodb is not installed in 
-the active conda environment. It will prompt a user to install
+the active conda environment. It will prompt the user to install
 pysodb automatically if it is not detected.
 
 *Note that manual installation is more stable.*
