@@ -355,6 +355,9 @@ listSODBDatasetExperimentNames <- function(dataset_name = NULL){
 #'        Must exist within the SODB.
 #' @param experiment_name name of one experiment associated with `dataset_name`
 #'        By default, the first experiment will be used.
+#' @param env_name name of the conda environment within which
+#'        pysodb is already installed, or within which installation
+#'        of pysodb will be prompted
 #' @details
 #' Interface with the Spatial Omics DataBase (SODB) using the
 #' python extension, pysodb, from TenCent.
@@ -368,7 +371,7 @@ listSODBDatasetExperimentNames <- function(dataset_name = NULL){
 #' experiments associate with a provided dataset.
 #' 
 #' This function will not run if pysodb is not installed in 
-#' the active conda environment. It will prompt a user to install
+#' the active conda environment. It will prompt the user to install
 #' pysodb automatically if it is not detected.
 #' 
 #' *Note that manual installation is more stable.*
@@ -407,8 +410,16 @@ listSODBDatasetExperimentNames <- function(dataset_name = NULL){
 #'                          experiment_name = desired_experiment)}
 #' @export
 getSODBDataset <- function(dataset_name = NULL,
-                           experiment_name = "default"){
-  check_py_for_pysodb()
+                           experiment_name = "default",
+                           env_name = "giotto_env"){
+  pysodb_installed = Giotto::checkPythonPackage(package = "pysodb",
+                                                env_to_use = env_name)
+  if (!pysodb_installed){
+    Giotto::checkPythonPackage(github_pacakge_url = "git+https://github.com/TencentAILabHealthcare/pysodb.git",
+                               env_to_use = env_name)
+    # not returning value to variable because this
+    # will crash downstream if unsuccessful.
+  }
   if(is.null(dataset_name)) {
     stop(GiottoUtils::wrap_txt("A dataset name must be provided.
                                Run `listSODBDatasetNames()` for dataset names.", 
