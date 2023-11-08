@@ -349,9 +349,15 @@ vizsubc = createSpatialWeightMatrix(vizsubc,
                                     return_gobject = TRUE)
 
 pDataDT(vizsubc, 'aggregate')
-spatPlot(gobject = vizsubc, spat_unit = 'aggregate', show_network = T,
-         network_color = 'lightgray', spatial_network_name = 'Delaunay_network',
-         point_size = 2.5, cell_color = 'leiden_clus')
+spatPlot(
+  gobject = vizsubc,
+  spat_unit = 'aggregate',
+  show_network = TRUE,
+  network_color = 'lightgray',
+  spatial_network_name = 'Delaunay_network',
+  point_size = 2.5,
+  cell_color = 'leiden_clus'
+)
 
 
 ## 9.1 spatial genes ####
@@ -460,7 +466,7 @@ saveGiotto(vizsubc,
            overwrite = TRUE)
 
 pDataDT(vizsubc, spat_unit = 'aggregate')
-pDataDT(vizsubc, spat_unit = 'aggregate')
+
 
 
 
