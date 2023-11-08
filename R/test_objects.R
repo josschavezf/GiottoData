@@ -9,7 +9,6 @@
 #' @export
 loadSubObjectMini = function(x, idx = 1L) {
 
-  index = path = type = NULL
   avail_obj_dt = list_subobject_mini()
   data_path = avail_obj_dt[type == x & index == idx, path]
 
@@ -24,16 +23,16 @@ loadSubObjectMini = function(x, idx = 1L) {
     original_path = load_data@file_path
     new_path = gsub(pattern = '.*[/]GiottoData/', replacement = '', x = original_path)
     new_path = paste0(gDataDir(), new_path)
-    load_data = GiottoClass::reconnect_giottoLargeImage(giottoLargeImage = load_data,
-                                                        image_path = new_path)
+    load_data = Giotto:::reconnect_giottoLargeImage(giottoLargeImage = load_data,
+                                                    image_path = new_path)
   }
 
   if(x == 'giottoImage') {
     original_path = load_data@file_path
     new_path = gsub(pattern = '.*[/]GiottoData/', replacement = '', x = original_path)
     new_path = paste0(gDataDir(), new_path)
-    load_data = GiottoClass::reconnect_giottoImage_MG(giottoImage = load_data,
-                                                      image_path = new_path)
+    load_data = Giotto:::reconnect_giottoImage_MG(giottoImage = load_data,
+                                                  image_path = new_path)
   }
 
   return(load_data)
@@ -51,7 +50,6 @@ loadSubObjectMini = function(x, idx = 1L) {
 #' @export
 listSubObjectMini = function(x = NULL) {
 
-  index = path = type = NULL
   avail_obj_dt = list_subobject_mini()
   avail_obj_dt_show = copy(avail_obj_dt)[, path := NULL]
   data.table::setcolorder(avail_obj_dt_show, neworder = c('type', 'index', 'file'))
@@ -73,7 +71,6 @@ listSubObjectMini = function(x = NULL) {
 #' @keywords internal
 list_subobject_mini = function() {
 
-  index = path = type = NULL
   miniobj_path = paste0(gDataDir(), '/Mini_objects/subobjects')
 
   avail_obj = list.files(path = miniobj_path, full.names = TRUE, recursive = TRUE)
