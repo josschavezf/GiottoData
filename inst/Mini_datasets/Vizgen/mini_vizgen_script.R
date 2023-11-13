@@ -150,22 +150,24 @@ spatInSituPlotPoints(vizsubc,
 # we can set a global option or specify this for each command
 # options('giotto.spat_unit' = 'z1') # now you don't need to think about setting spat_unit each time
 
-vizsubc = calculateOverlapRaster(vizsubc,
-                                 spatial_info = 'z0',
-                                 feat_info = 'rna',
-                                 feat_subset_column = 'global_z',
-                                 feat_subset_ids = 0)
+# calculate z0
+vizsubc = calculateOverlap(vizsubc,
+                           spatial_info = 'z0',
+                           feat_info = 'rna',
+                           feat_subset_column = 'global_z',
+                           feat_subset_ids = 0)
 
 vizsubc = overlapToMatrix(vizsubc,
                           poly_info = 'z0',
                           feat_info = 'rna',
                           name = 'raw')
 
-vizsubc = calculateOverlapRaster(vizsubc,
-                                 spatial_info = 'z1',
-                                 feat_info = 'rna',
-                                 feat_subset_column = 'global_z',
-                                 feat_subset_ids = 1)
+# calculate z1
+vizsubc = calculateOverlap(vizsubc,
+                           spatial_info = 'z1',
+                           feat_info = 'rna',
+                           feat_subset_column = 'global_z',
+                           feat_subset_ids = 1)
 
 vizsubc = overlapToMatrix(vizsubc,
                           poly_info = 'z1',
