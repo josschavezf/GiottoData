@@ -19,10 +19,19 @@
     <loc>https://drieslab.github.io/GiottoData/reference/gDataDir.html</loc>
   </url>
   <url>
+    <loc>https://drieslab.github.io/GiottoData/reference/getSODBDataset.html</loc>
+  </url>
+  <url>
     <loc>https://drieslab.github.io/GiottoData/reference/getSpatialDataset.html</loc>
   </url>
   <url>
     <loc>https://drieslab.github.io/GiottoData/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://drieslab.github.io/GiottoData/reference/listSODBDatasetExperimentNames.html</loc>
+  </url>
+  <url>
+    <loc>https://drieslab.github.io/GiottoData/reference/listSODBDatasetNames.html</loc>
   </url>
   <url>
     <loc>https://drieslab.github.io/GiottoData/reference/listSubObjectMini.html</loc>
