@@ -5,7 +5,6 @@
 # devtools::load_all(path = '/Users/rubendries/r_packages/Giotto/')
 
 library(terra)
-library(data.table)
 library(GiottoClass)
 library(GiottoVisuals)
 library(Giotto)
