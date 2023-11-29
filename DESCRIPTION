@@ -1,7 +1,7 @@
 Package: GiottoData
 Type: Package
 Title: Datasets for Giotto
-Version: 0.2.5
+Version: 0.2.6.2
 Author: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
 		 role = c("aut", "cre"))
@@ -9,7 +9,7 @@ Author: c(
 Maintainer: Ruben Dries <rubendries@gmail.com>
 Description: Stores information and scripts to work with, or load various
     different spatial datasets that can be used with the Giotto Suite workflow.
-    Also contains example mini Giotto subobjects
+    Also contains example mini Giotto subobjects.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -17,9 +17,17 @@ URL: https://drieslab.github.io/GiottoData/, https://github.com/drieslab/GiottoD
 BugReports: https://github.com/drieslab/GiottoData/issues
 Depends:
     R (>= 3.5.0),
-    Giotto (>= 3.0.0)
+    GiottoClass,
+    GiottoUtils,
+    utils (>= 3.5.0)
 Imports:
-    utils (>= 3.5.0),
     data.table (>= 1.14.0),
+Suggests:
+    GiottoVisuals,
+    Giotto,
     terra (>= 1.5-12)
+Remotes:
+    drieslab/GiottoClass,
+    drieslab/GiottoUtils,
+    drieslab/Giotto@suite_modular
 RoxygenNote: 7.2.3
