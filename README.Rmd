@@ -5,8 +5,15 @@ output: github_document
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- This line is from RStudio -->
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/"
+)
+```
 
-# GiottoData
+# GiottoData <img src="man/figures/logo.png" align="right" alt="" width="160" />
 
 Repo for GiottoData
 

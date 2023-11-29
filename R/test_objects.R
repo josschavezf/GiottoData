@@ -8,6 +8,9 @@
 #' is available (see \code{\link{listSubObjectMini}})
 #' @export
 loadSubObjectMini = function(x, idx = 1L) {
+  
+  # declare data.table variables
+  type = index = path = NULL
 
   avail_obj_dt = list_subobject_mini()
   data_path = avail_obj_dt[type == x & index == idx, path]
@@ -16,23 +19,23 @@ loadSubObjectMini = function(x, idx = 1L) {
 
   # wrapped objects
   if(x %in% c('giottoPoints', 'giottoPolygon')) {
-    load_data = terra::vect(load_data)
+    load_data = GiottoClass::vect(load_data)
   }
 
   if(x == 'giottoLargeImage') {
     original_path = load_data@file_path
     new_path = gsub(pattern = '.*[/]GiottoData/', replacement = '', x = original_path)
     new_path = paste0(gDataDir(), new_path)
-    load_data = Giotto:::reconnect_giottoLargeImage(giottoLargeImage = load_data,
-                                                    image_path = new_path)
+    load_data = GiottoClass::reconnect_giottoLargeImage(giottoLargeImage = load_data,
+                                                        image_path = new_path)
   }
 
   if(x == 'giottoImage') {
     original_path = load_data@file_path
     new_path = gsub(pattern = '.*[/]GiottoData/', replacement = '', x = original_path)
     new_path = paste0(gDataDir(), new_path)
-    load_data = Giotto:::reconnect_giottoImage_MG(giottoImage = load_data,
-                                                  image_path = new_path)
+    load_data = GiottoClass::reconnect_giottoImage_MG(giottoImage = load_data,
+                                                      image_path = new_path)
   }
 
   return(load_data)
@@ -49,6 +52,9 @@ loadSubObjectMini = function(x, idx = 1L) {
 #' @param x subobject type (NULL lists all subobject types)
 #' @export
 listSubObjectMini = function(x = NULL) {
+  
+  # declare data.table variables
+  path = type = NULL
 
   avail_obj_dt = list_subobject_mini()
   avail_obj_dt_show = copy(avail_obj_dt)[, path := NULL]
@@ -70,15 +76,18 @@ listSubObjectMini = function(x = NULL) {
 #' for the external version which provides those functions.
 #' @keywords internal
 list_subobject_mini = function() {
+  
+  # declare data.table variables
+  path = type = NULL
 
   miniobj_path = paste0(gDataDir(), '/Mini_objects/subobjects')
 
   avail_obj = list.files(path = miniobj_path, full.names = TRUE, recursive = TRUE)
   avail_obj_dt = data.table::data.table(file = basename(avail_obj), path = avail_obj)
-  avail_obj_dt[, type := gsub(pattern = paste0(miniobj_path, '/'), replacement = '', x = path)]
-  avail_obj_dt[, type := gsub(pattern = '[/].*', replacement = '', x = type)]
+  avail_obj_dt[, 'type' := gsub(pattern = paste0(miniobj_path, '/'), replacement = '', x = path)]
+  avail_obj_dt[, 'type' := gsub(pattern = '[/].*', replacement = '', x = type)]
 
-  avail_obj_dt[, index := seq_along(path), by = type]
+  avail_obj_dt[, 'index' := seq_along(path), by = type]
 
   return(avail_obj_dt)
 
