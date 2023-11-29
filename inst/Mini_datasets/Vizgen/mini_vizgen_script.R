@@ -57,11 +57,11 @@ tx_dt = data.table::fread(tx_path)
 
 boundary_path = paste0(data_path, '/cell_boundaries/')
 
-z0_polygon_DT = fread(paste0(boundary_path, '/', 'z0_polygons.gz'))
+z0_polygon_DT = data.table::fread(paste0(boundary_path, '/', 'z0_polygons.gz'))
 z0_polygons = createGiottoPolygonsFromDfr(name = 'z0',
                                           segmdfr = z0_polygon_DT)
 
-z1_polygon_DT = fread(paste0(boundary_path, '/', 'z1_polygons.gz'))
+z1_polygon_DT = data.table::fread(paste0(boundary_path, '/', 'z1_polygons.gz'))
 z1_polygons = createGiottoPolygonsFromDfr(name = 'z1',
                                           segmdfr = z1_polygon_DT)
 
@@ -76,10 +76,12 @@ showGiottoSpatialInfo(vizsubc)
 
 # calculate centroid for each polygon ( = cell)
 # this can/will be used when aggregating for example counts to cells
-vizsubc = addSpatialCentroidLocations(gobject = vizsubc,
-                                      poly_info = paste0('z',0:1),
-                                      provenance = list('z0', 'z1'),
-                                      return_gobject = TRUE)
+vizsubc = addSpatialCentroidLocations(
+  gobject = vizsubc,
+  poly_info = paste0('z',0:1),
+  provenance = list('z0', 'z1'),
+  return_gobject = TRUE
+)
 showGiottoSpatLocs(vizsubc)
 
 
@@ -106,23 +108,27 @@ vizsubc = addGiottoImage(gobject = vizsubc,
 showGiottoImageNames(vizsubc)
 
 # visualize
-spatPlot2D(gobject = vizsubc,
-           spat_unit = 'z0',
-           show_image = T,
-           largeImage_name = 'dapi_z0',
-           point_shape = 'no_border',
-           point_size = 2.5,
-           point_alpha = 0.4,
-           save_param = list(base_width = 7, base_height = 7))
+spatPlot2D(
+  gobject = vizsubc,
+  spat_unit = 'z0',
+  show_image = T,
+  largeImage_name = 'dapi_z0',
+  point_shape = 'no_border',
+  point_size = 2.5,
+  point_alpha = 0.4,
+  save_param = list(base_width = 7, base_height = 7)
+)
 
-spatPlot2D(gobject = vizsubc,
-           spat_unit = 'z1',
-           show_image = T,
-           largeImage_name = 'polyT_z1',
-           point_shape = 'no_border',
-           point_size = 2.5,
-           point_alpha = 0.4,
-           save_param = list(base_width = 7, base_height = 7))
+spatPlot2D(
+  gobject = vizsubc,
+  spat_unit = 'z1',
+  show_image = T,
+  largeImage_name = 'polyT_z1',
+  point_shape = 'no_border',
+  point_size = 2.5,
+  point_alpha = 0.4,
+  save_param = list(base_width = 7, base_height = 7)
+)
 
 
 spatInSituPlotPoints(vizsubc,
@@ -473,8 +479,7 @@ spatInSituPlotHex(vizsubc,
 format(object.size(vizsubc), units = 'Mb')
 
 # you need to use your local GiottoData repo
-# giottodata_repo = '/Users/rubendries/Packages/R_Packages/GiottoData/inst/Mini_datasets/'
-giottodata_repo = '/Users/rubendries/r_packages/GiottoData//inst/Mini_datasets/'
+giottodata_repo = './inst/Mini_datasets/'
 
 saveGiotto(vizsubc,
            foldername = 'VizgenObject',
@@ -482,7 +487,6 @@ saveGiotto(vizsubc,
            dir = paste0(giottodata_repo, '/', 'Vizgen/'),
            overwrite = TRUE)
 
-pDataDT(vizsubc, spat_unit = 'aggregate')
 pDataDT(vizsubc, spat_unit = 'aggregate')
 
 
