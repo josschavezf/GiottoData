@@ -34,10 +34,13 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 
     'cosmx' = loadGiotto(path_to_folder = system.file('/Mini_datasets/CosMx/CosMxObject/', package = 'GiottoData'),
                          python_path = python_path,
                          reconnect_giottoImage = FALSE),
-    'seqfish' = {
-      wrap_msg('To be implemented \n')
-      return(invisible(NULL)) # exit early
-    },
+    'seqfish' = loadGiotto(path_to_folder = system.file('/Mini_datasets/seqfish/seqfishObject/', package = 'GiottoData'),
+                           python_path = python_path,
+                           reconnect_giottoImage = FALSE),
+    #   {
+    #   wrap_msg('To be implemented \n')
+    #   return(invisible(NULL)) # exit early
+    # },
     'starmap' = loadGiotto(path_to_folder = system.file('/Mini_datasets/3D_starmap/3DStarmapObject/', package = 'GiottoData'),
                            python_path = python_path),
     'spatialgenomics' = loadGiotto(path_to_folder = system.file('/Mini_datasets/SpatialGenomics/SpatialGenomicsObject/', package = 'GiottoData'),
