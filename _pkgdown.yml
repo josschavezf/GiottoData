@@ -2,6 +2,8 @@ url: https://drieslab.github.io/GiottoData/
 
 
 authors:
+  Ruben Dries:
+    href: https://www.drieslab.com
   Joselyn Chávez:
     href: https://josschavezf.github.io
 
@@ -15,7 +17,7 @@ template:
     code_font: {google: "JetBrains Mono"}
 
 navbar:
-  bg: dark
+  bg: light
   structure:
     left:
     - intro
