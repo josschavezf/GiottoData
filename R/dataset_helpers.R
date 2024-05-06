@@ -17,43 +17,51 @@
 #' Instructions, such as for saving plots, can be changed
 #' using the \code{\link{changeGiottoInstructions}}
 #' @export
-loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 'cosmx', 'spatialgenomics'),
-                          python_path = NULL) {
+loadGiottoMini <- function(dataset = c("visium", "seqfish", "starmap", "vizgen", "cosmx", "spatialgenomics"),
+    python_path = NULL) {
+    dataset <- match.arg(dataset, choices = c("visium", "seqfish", "starmap", "vizgen", "cosmx", "spatialgenomics"))
+
+    mini_gobject <- switch(dataset,
+        "visium" = loadGiotto(
+            path_to_folder = system.file("/Mini_datasets/Visium/VisiumObject/", package = "GiottoData"),
+            python_path = python_path,
+            reconnect_giottoImage = FALSE
+        ),
+        "vizgen" = loadGiotto(
+            path_to_folder = system.file("/Mini_datasets/Vizgen/VizgenObject/", package = "GiottoData"),
+            python_path = python_path,
+            reconnect_giottoImage = FALSE
+        ),
+        "cosmx" = loadGiotto(
+            path_to_folder = system.file("/Mini_datasets/CosMx/CosMxObject/", package = "GiottoData"),
+            python_path = python_path,
+            reconnect_giottoImage = FALSE
+        ),
+        "seqfish" = {
+            wrap_msg("To be implemented \n")
+            return(invisible(NULL)) # exit early
+        },
+        "starmap" = loadGiotto(
+            path_to_folder = system.file("/Mini_datasets/3D_starmap/3DStarmapObject/", package = "GiottoData"),
+            python_path = python_path
+        ),
+        "spatialgenomics" = loadGiotto(
+            path_to_folder = system.file("/Mini_datasets/SpatialGenomics/SpatialGenomicsObject/", package = "GiottoData"),
+            python_path = python_path
+        )
+    )
 
 
-  dataset = match.arg(dataset, choices = c('visium', 'seqfish', 'starmap', 'vizgen', 'cosmx', 'spatialgenomics'))
+    # 1. change default instructions
+    # Only mini object-specific instructions should be updated here. The python
+    # path update was taken care of inside of `loadGiotto()`
+    mini_gobject <- changeGiottoInstructions(
+        gobject = mini_gobject,
+        params = c("show_plot", "return_plot", "save_plot", "save_dir"),
+        new_values = c(TRUE, FALSE, FALSE, NA)
+    )
 
-  mini_gobject = switch(
-    dataset,
-    'visium' = loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/VisiumObject/', package = 'GiottoData'),
-                          python_path = python_path,
-                          reconnect_giottoImage = FALSE),
-    'vizgen' = loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'),
-                          python_path = python_path,
-                          reconnect_giottoImage = FALSE),
-    'cosmx' = loadGiotto(path_to_folder = system.file('/Mini_datasets/CosMx/CosMxObject/', package = 'GiottoData'),
-                         python_path = python_path,
-                         reconnect_giottoImage = FALSE),
-    'seqfish' = {
-      wrap_msg('To be implemented \n')
-      return(invisible(NULL)) # exit early
-    },
-    'starmap' = loadGiotto(path_to_folder = system.file('/Mini_datasets/3D_starmap/3DStarmapObject/', package = 'GiottoData'),
-                           python_path = python_path),
-    'spatialgenomics' = loadGiotto(path_to_folder = system.file('/Mini_datasets/SpatialGenomics/SpatialGenomicsObject/', package = 'GiottoData'),
-                                   python_path = python_path)
-  )
-
-
-  # 1. change default instructions
-  # Only mini object-specific instructions should be updated here. The python
-  # path update was taken care of inside of `loadGiotto()`
-  mini_gobject = changeGiottoInstructions(gobject = mini_gobject,
-                                          params = c('show_plot', 'return_plot', 'save_plot', 'save_dir'),
-                                          new_values = c(TRUE, FALSE, FALSE, NA))
-
-  return(mini_gobject)
-
+    return(mini_gobject)
 }
 
 
@@ -69,208 +77,204 @@ loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 
 #' to create a Giotto object. If wget is installed on your machine, you can add
 #' 'method = wget' to the parameters to download files faster.
 #' @export
-getSpatialDataset = function(dataset = c('ST_OB1',
-                                         'ST_OB2',
-                                         'codex_spleen',
-                                         'cycif_PDAC',
-                                         'starmap_3D_cortex',
-                                         'osmfish_SS_cortex',
-                                         'merfish_preoptic',
-                                         'mini_seqFISH',
-                                         'seqfish_SS_cortex',
-                                         'seqfish_OB',
-                                         'slideseq_cerebellum',
-                                         'ST_SCC',
-                                         'scRNA_prostate',
-                                         'scRNA_mouse_brain',
-                                         'mol_cart_lung_873_C1',
-                                         'sg_mini_kidney'),
-                             directory = getwd(),
-                             verbose = TRUE,
-                             dryrun = FALSE,
-                             ...) {
+getSpatialDataset <- function(dataset = c(
+        "ST_OB1",
+        "ST_OB2",
+        "codex_spleen",
+        "cycif_PDAC",
+        "starmap_3D_cortex",
+        "osmfish_SS_cortex",
+        "merfish_preoptic",
+        "mini_seqFISH",
+        "seqfish_SS_cortex",
+        "seqfish_OB",
+        "slideseq_cerebellum",
+        "ST_SCC",
+        "scRNA_prostate",
+        "scRNA_mouse_brain",
+        "mol_cart_lung_873_C1",
+        "sg_mini_kidney"
+    ),
+    directory = getwd(),
+    verbose = TRUE,
+    dryrun = FALSE,
+    ...) {
+    sel_dataset <- match.arg(arg = dataset, choices = c(
+        "ST_OB1",
+        "ST_OB2",
+        "codex_spleen",
+        "cycif_PDAC",
+        "starmap_3D_cortex",
+        "osmfish_SS_cortex",
+        "merfish_preoptic",
+        "mini_seqFISH",
+        "seqfish_SS_cortex",
+        "seqfish_OB",
+        "slideseq_cerebellum",
+        "ST_SCC",
+        "scRNA_prostate",
+        "scRNA_mouse_brain",
+        "mol_cart_lung_873_C1",
+        "sg_mini_kidney"
+    ))
 
-  sel_dataset = match.arg(arg = dataset, choices = c('ST_OB1',
-                                                     'ST_OB2',
-                                                     'codex_spleen',
-                                                     'cycif_PDAC',
-                                                     'starmap_3D_cortex',
-                                                     'osmfish_SS_cortex',
-                                                     'merfish_preoptic',
-                                                     'mini_seqFISH',
-                                                     'seqfish_SS_cortex',
-                                                     'seqfish_OB',
-                                                     'slideseq_cerebellum',
-                                                     'ST_SCC',
-                                                     'scRNA_prostate',
-                                                     'scRNA_mouse_brain',
-                                                     'mol_cart_lung_873_C1',
-                                                     'sg_mini_kidney'))
+    # check operating system first
+    os_specific_system <- get_os()
 
-  # check operating system first
-  os_specific_system = get_os()
-
-  #if(os_specific_system == 'windows') {
-  #  stop('This function is currently not supported on windows systems,
-  #       please visit https://github.com/RubD/spatial-datasets and manually download your files')
-  #}
-
-
-  # check directory
-  if(!file.exists(directory)) {
-    warning('The output directory does not exist and will be created \n')
-    dir.create(directory, recursive = TRUE)
-  }
-
-  datasets_file = system.file("extdata", "datasets.txt", package = 'GiottoData')
-  datasets_file = data.table::fread(datasets_file, sep = "\t")
+    # if(os_specific_system == 'windows') {
+    #  stop('This function is currently not supported on windows systems,
+    #       please visit https://github.com/RubD/spatial-datasets and manually download your files')
+    # }
 
 
-
-  ## check if wget is installed
-  #message = system("if ! command -v wget &> /dev/null
-  #                  then
-  #                  echo 'wget could not be found, please install wget first'
-  #                  exit
-  #                  fi", intern = TRUE)
-
-  #if(identical(message, character(0))) {
-  #  print('wget was found, start downloading datasets: ')
-  #} else {
-  #  stop(message)
-  #}
-
-  ## alternative
-  #wget_works = try(system('command -v wget', intern = T))
-
-  #if(class(wget_works) == 'try-error' | is.na(wget_works[1])) {
-  #  stop('wget was not found, please install wget first \n')
-  #} else {
-  #  print('wget was found, start downloading datasets: \n')
-  #}
-
-  selection = datasets_file[['dataset']] == sel_dataset
-  selected_dataset_info = datasets_file[selection,]
-  if(verbose) {
-    wrap_msg('Selected dataset links for: ', sel_dataset, ' \n \n')
-    print(selected_dataset_info)
-  }
-
-
-
-  # get url to expression matrix and download
-  if(verbose) {
-    wrap_msg("\n \n Download expression matrix: \n")
-  }
-  expr_matrix_url = selected_dataset_info[['expr_matrix']]
-
-  if(expr_matrix_url == "") {
-    wrap_msg('\n No expression found, skip this step \n')
-  } else {
-
-    expr_matrix_url = unlist(strsplit(expr_matrix_url, split = '\\|'))
-
-    for(url in expr_matrix_url) {
-      myfilename = basename(url)
-      mydestfile = paste0(directory,'/', myfilename)
-
-      if(dryrun) {
-        wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
-      } else {
-        utils::download.file(url = url, destfile = mydestfile, ...)
-      }
+    # check directory
+    if (!file.exists(directory)) {
+        warning("The output directory does not exist and will be created \n")
+        dir.create(directory, recursive = TRUE)
     }
 
-  }
+    datasets_file <- system.file("extdata", "datasets.txt", package = "GiottoData")
+    datasets_file <- data.table::fread(datasets_file, sep = "\t")
 
 
 
+    ## check if wget is installed
+    # message = system("if ! command -v wget &> /dev/null
+    #                  then
+    #                  echo 'wget could not be found, please install wget first'
+    #                  exit
+    #                  fi", intern = TRUE)
 
+    # if(identical(message, character(0))) {
+    #  print('wget was found, start downloading datasets: ')
+    # } else {
+    #  stop(message)
+    # }
 
+    ## alternative
+    # wget_works = try(system('command -v wget', intern = T))
 
-  # get url to spatial locations and download
-  if(verbose) {
-    wrap_msg("\n \n Download spatial locations: \n")
-  }
+    # if(class(wget_works) == 'try-error' | is.na(wget_works[1])) {
+    #  stop('wget was not found, please install wget first \n')
+    # } else {
+    #  print('wget was found, start downloading datasets: \n')
+    # }
 
-  spatial_locs_url = selected_dataset_info[['spatial_locs']]
-
-  if(spatial_locs_url == "") {
-    wrap_msg('\n No spatial locations found, skip this step \n')
-  } else {
-
-    spatial_locs_url = unlist(strsplit(spatial_locs_url, split = '\\|'))
-
-    for(url in spatial_locs_url) {
-      myfilename = basename(url)
-      mydestfile = paste0(directory,'/', myfilename)
-
-      if(dryrun) {
-        wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
-      } else {
-        utils::download.file(url = url, destfile = mydestfile, ...)
-      }
-    }
-  }
-
-
-
-
-
-  # get url(s) to additional metadata files and download
-  if(verbose) {
-    wrap_msg("\n \n Download metadata: \n")
-  }
-
-  #metadata_url = selected_dataset_info[['metadata']][[1]]
-  metadata_url = selected_dataset_info[['metadata']]
-
-  if(metadata_url == "") {
-    wrap_msg('\n No metadata found, skip this step \n')
-  } else {
-
-    metadata_url = unlist(strsplit(metadata_url, split = '\\|'))
-
-    for(url in metadata_url) {
-      myfilename = basename(url)
-      mydestfile = paste0(directory,'/', myfilename)
-
-      if(dryrun) {
-        wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
-      } else {
-        utils::download.file(url = url, destfile = mydestfile, ...)
-      }
+    selection <- datasets_file[["dataset"]] == sel_dataset
+    selected_dataset_info <- datasets_file[selection, ]
+    if (verbose) {
+        wrap_msg("Selected dataset links for: ", sel_dataset, " \n \n")
+        print(selected_dataset_info)
     }
 
-  }
 
 
+    # get url to expression matrix and download
+    if (verbose) {
+        wrap_msg("\n \n Download expression matrix: \n")
+    }
+    expr_matrix_url <- selected_dataset_info[["expr_matrix"]]
 
+    if (expr_matrix_url == "") {
+        wrap_msg("\n No expression found, skip this step \n")
+    } else {
+        expr_matrix_url <- unlist(strsplit(expr_matrix_url, split = "\\|"))
 
+        for (url in expr_matrix_url) {
+            myfilename <- basename(url)
+            mydestfile <- paste0(directory, "/", myfilename)
 
-
-  spatial_seg_url = selected_dataset_info[['segmentations']]
-
-  if(spatial_seg_url == "") {
-    # wrap_msg('\n No segmentations found, skip this step \n')
-  } else {
-
-    if(verbose) {
-      wrap_msg("\n \n Download segmentations: \n")
+            if (dryrun) {
+                wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
+            } else {
+                utils::download.file(url = url, destfile = mydestfile, ...)
+            }
+        }
     }
 
-    spatial_seg_url = unlist(strsplit(spatial_seg_url, split = '\\|'))
 
-    for(url in spatial_seg_url) {
-      myfilename = basename(url)
-      mydestfile = paste0(directory,'/', myfilename)
 
-      if(dryrun) {
-        wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
-      } else {
-        utils::download.file(url = url, destfile = mydestfile, ...)
-      }
+
+
+
+    # get url to spatial locations and download
+    if (verbose) {
+        wrap_msg("\n \n Download spatial locations: \n")
     }
-  }
 
+    spatial_locs_url <- selected_dataset_info[["spatial_locs"]]
+
+    if (spatial_locs_url == "") {
+        wrap_msg("\n No spatial locations found, skip this step \n")
+    } else {
+        spatial_locs_url <- unlist(strsplit(spatial_locs_url, split = "\\|"))
+
+        for (url in spatial_locs_url) {
+            myfilename <- basename(url)
+            mydestfile <- paste0(directory, "/", myfilename)
+
+            if (dryrun) {
+                wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
+            } else {
+                utils::download.file(url = url, destfile = mydestfile, ...)
+            }
+        }
+    }
+
+
+
+
+
+    # get url(s) to additional metadata files and download
+    if (verbose) {
+        wrap_msg("\n \n Download metadata: \n")
+    }
+
+    # metadata_url = selected_dataset_info[['metadata']][[1]]
+    metadata_url <- selected_dataset_info[["metadata"]]
+
+    if (metadata_url == "") {
+        wrap_msg("\n No metadata found, skip this step \n")
+    } else {
+        metadata_url <- unlist(strsplit(metadata_url, split = "\\|"))
+
+        for (url in metadata_url) {
+            myfilename <- basename(url)
+            mydestfile <- paste0(directory, "/", myfilename)
+
+            if (dryrun) {
+                wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
+            } else {
+                utils::download.file(url = url, destfile = mydestfile, ...)
+            }
+        }
+    }
+
+
+
+
+
+
+    spatial_seg_url <- selected_dataset_info[["segmentations"]]
+
+    if (spatial_seg_url == "") {
+        # wrap_msg('\n No segmentations found, skip this step \n')
+    } else {
+        if (verbose) {
+            wrap_msg("\n \n Download segmentations: \n")
+        }
+
+        spatial_seg_url <- unlist(strsplit(spatial_seg_url, split = "\\|"))
+
+        for (url in spatial_seg_url) {
+            myfilename <- basename(url)
+            mydestfile <- paste0(directory, "/", myfilename)
+
+            if (dryrun) {
+                wrap_msg("utils::download.file(url = ", url, ", destfile = ", mydestfile, ", ...)")
+            } else {
+                utils::download.file(url = url, destfile = mydestfile, ...)
+            }
+        }
+    }
 }
