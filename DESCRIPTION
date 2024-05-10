@@ -17,10 +17,10 @@ BugReports: https://github.com/drieslab/GiottoData/issues
 Depends:
     R (>= 4.3.0),
     GiottoClass,
-    GiottoUtils,
     utils (>= 3.5.0)
 Imports:
     data.table (>= 1.14.0),
+    GiottoUtils,
 Suggests:
     GiottoVisuals,
     Giotto,

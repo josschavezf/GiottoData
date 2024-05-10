@@ -42,7 +42,7 @@ locations_path = paste0(data_path, '/', 'visium_DG_locs.txt')
 meta_path = paste0(data_path, '/', 'visium_DG_meta.txt')
 
 
-# 1. create subcellular dataset with transcript and polygon information ####
+# 1. create visium dataset ####
 # ------------------------------------------------------------------------ #
 mini_visium <- createGiottoObject(expression = expr_path,
                                   spatial_locs = locations_path,
