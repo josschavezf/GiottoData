@@ -27,7 +27,9 @@ data_path = system.file('/Mini_datasets/Visium/Raw/', package = 'GiottoData')
 
 ## 0.1 path to images ####
 # ---------------------- #
-image_path = paste0(data_path, '/', 'images/deg_image.png')
+image_path <- vector("list")
+image_path["alignment"] = file.path(data_path, 'images/deg_image.png')
+image_path["he"] =  file.path(data_path, 'images/deg_image2.png')
 
 ## 0.2 path to expression matrix ####
 # --------------------------- #
@@ -41,6 +43,10 @@ locations_path = paste0(data_path, '/', 'visium_DG_locs.txt')
 # -------------------------------------- #
 meta_path = paste0(data_path, '/', 'visium_DG_meta.txt')
 
+## 0.5 path to scalefactors ####
+# -------------------------------------- #
+scalef_path <- file.path(data_path, "scalefactors_json.json")
+
 
 # 1. create visium dataset ####
 # ------------------------------------------------------------------------ #
@@ -48,6 +54,8 @@ mini_visium <- createGiottoObject(expression = expr_path,
                                   spatial_locs = locations_path,
                                   cell_metadata = meta_path,
                                   instructions = instrs)
+
+mini_visium <- addVisiumPolygons(mini_visium, scalefactor_path = scalef_path)
 
 showGiottoSpatLocs(mini_visium)
 showGiottoExpression(mini_visium)
@@ -57,11 +65,12 @@ showGiottoExpression(mini_visium)
 
 spatlocsDT = getSpatialLocations(mini_visium)
 mini_extent = terra::ext(c(range(spatlocsDT$sdimx), range(spatlocsDT$sdimy)))
-imagelist = createGiottoLargeImageList(raster_objects = image_path,
-                                       names = 'image',
-                                       extent = terra::ext(2364.5, 6522.5, -5425.25, -2620.75))
+imagelist = createGiottoLargeImageList(
+  raster_objects = image_path,
+  names = c("alignment", "he"),
+  extent = terra::ext(2364.5, 6522.5, -5425.25, -2620.75))
 mini_visium = addGiottoImage(gobject = mini_visium,
-                             largeImages = imagelist)
+                             images = imagelist)
 showGiottoImageNames(mini_visium)
 
 ## 1.2. visualize ####
@@ -69,12 +78,28 @@ showGiottoImageNames(mini_visium)
 spatPlot2D(gobject = mini_visium,
            spat_unit = 'cell',
            show_image = TRUE,
-           largeImage_name = 'image',
+           image_name = 'alignment',
            point_shape = 'no_border',
            point_size = 2.5,
            point_alpha = 0.4)
 
-mini_visium@largeImages$image@raster_object
+spatPlot2D(gobject = mini_visium,
+           spat_unit = 'cell',
+           show_image = TRUE,
+           image_name = 'he',
+           point_shape = 'no_border',
+           point_size = 2.5,
+           point_alpha = 0.4)
+
+spatInSituPlotPoints(
+  mini_visium,
+  show_polygon = TRUE,
+  polygon_color = "cyan",
+  show_image = TRUE,
+  image_name = "alignment"
+)
+
+mini_visium@images$alignment@raster_object
 
 # 2 process ####
 # ------------ #
@@ -97,12 +122,14 @@ mini_visium <- addStatistics(gobject = mini_visium)
 ## visualize
 spatPlot2D(gobject = mini_visium,
            show_image = TRUE,
-           largeImage_name = 'image',
+           image_name = 'he',
            point_alpha = 0.7)
 
 spatPlot2D(gobject = mini_visium,
            show_image = TRUE,
-           largeImage_name = 'image',
+           image_name = 'he',
+           background_color = "black",
+           cell_color_gradient = c("cyan", "blue", "black", "orange", "yellow"),
            point_alpha = 0.7,
            cell_color = 'nr_feats',
            color_as_factor = F)
@@ -133,13 +160,17 @@ mini_visium <- createNearestNetwork(gobject = mini_visium, dimensions_to_use = 1
 ## Leiden clustering
 mini_visium <- doLeidenCluster(gobject = mini_visium, resolution = 0.1, n_iterations = 1000)
 
-plotUMAP(gobject = mini_visium, cell_color = 'leiden_clus', show_NN_network = T, point_size = 2.5)
+plotUMAP(gobject = mini_visium,
+         cell_color = 'leiden_clus',
+         show_NN_network = T,
+         point_size = 2.5)
 
 spatDimPlot(gobject = mini_visium,
             show_image = TRUE,
-            largeImage_name = 'image',
+            image_name = 'he',
             cell_color = 'leiden_clus',
-            dim_point_size = 2, spat_point_size = 2.5)
+            dim_point_size = 2,
+            spat_point_size = 2.5)
 
 
 # 5. spatial network ####
@@ -242,7 +273,6 @@ saveGiotto(mini_visium,
            overwrite = TRUE)
 
 pDataDT(mini_visium)
-pDataDT(mini_visium)
 
 
 ## some quick tests ##
@@ -252,12 +282,12 @@ visium_test = loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/Vis
 
 spatPlot2D(visium_test,
            show_image = T,
-           largeImage_name = 'image',
+           image_name = 'he',
            cell_color = 'custom_leiden')
 
 spatDimPlot(gobject = visium_test,
             show_image = TRUE,
-            largeImage_name = 'image',
+            image_name = 'he',
             cell_color = 'leiden_clus',
             dim_point_size = 2,
             spat_point_size = 2.5)
@@ -316,7 +346,7 @@ speg_rna@NAMES
 
 speg_rna@assays@data$normalized_rna_cell
 
-guard_against_notgiotto
+
 
 ?SpatialExperiment::SpatialExperiment()
 
