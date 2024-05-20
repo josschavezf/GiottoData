@@ -29,7 +29,7 @@ data_path = system.file('/Mini_datasets/Visium/Raw/', package = 'GiottoData')
 # ---------------------- #
 image_path <- vector("list")
 image_path["alignment"] = file.path(data_path, 'images/deg_image.png')
-image_path["he"] =  file.path(data_path, 'images/deg_image2.png')
+image_path["image"] =  file.path(data_path, 'images/deg_image2.png')
 
 ## 0.2 path to expression matrix ####
 # --------------------------- #
@@ -65,10 +65,20 @@ showGiottoExpression(mini_visium)
 
 spatlocsDT = getSpatialLocations(mini_visium)
 mini_extent = terra::ext(c(range(spatlocsDT$sdimx), range(spatlocsDT$sdimy)))
-imagelist = createGiottoLargeImageList(
-  raster_objects = image_path,
-  names = c("alignment", "he"),
-  extent = terra::ext(2364.5, 6522.5, -5425.25, -2620.75))
+image_align = createGiottoLargeImage(
+  raster_object = image_path$alignment,
+  name = "alignment",
+  extent = terra::ext(2364.5, 6522.5, -5425.25, -2620.75)
+ )
+image_he <- createGiottoLargeImage(
+    raster_object = image_path$image,
+    name = "image",
+    extent = terra::ext(2000.5, 6790.5, -5730.25, -2380.75)
+)
+# image_he <- rescale(image_he, 13.2420382165605, 13.2287735849057)
+# image_he <- spatShift(image_he, dx = 4322, dy = -3937)
+imagelist <- list(image_align, image_he)
+names(imagelist) <- c("alignment", "he")
 mini_visium = addGiottoImage(gobject = mini_visium,
                              images = imagelist)
 showGiottoImageNames(mini_visium)
@@ -86,7 +96,7 @@ spatPlot2D(gobject = mini_visium,
 spatPlot2D(gobject = mini_visium,
            spat_unit = 'cell',
            show_image = TRUE,
-           image_name = 'he',
+           image_name = 'image',
            point_shape = 'no_border',
            point_size = 2.5,
            point_alpha = 0.4)
@@ -122,12 +132,12 @@ mini_visium <- addStatistics(gobject = mini_visium)
 ## visualize
 spatPlot2D(gobject = mini_visium,
            show_image = TRUE,
-           image_name = 'he',
+           image_name = 'image',
            point_alpha = 0.7)
 
 spatPlot2D(gobject = mini_visium,
            show_image = TRUE,
-           image_name = 'he',
+           image_name = 'image',
            background_color = "black",
            cell_color_gradient = c("cyan", "blue", "black", "orange", "yellow"),
            point_alpha = 0.7,
@@ -167,7 +177,7 @@ plotUMAP(gobject = mini_visium,
 
 spatDimPlot(gobject = mini_visium,
             show_image = TRUE,
-            image_name = 'he',
+            image_name = 'image',
             cell_color = 'leiden_clus',
             dim_point_size = 2,
             spat_point_size = 2.5)
@@ -186,9 +196,13 @@ mini_visium <- createSpatialNetwork(gobject = mini_visium,
 # 6. spatial genes ####
 # ------------------- #
 showGiottoSpatNetworks(mini_visium)
-ranktest = binSpect(mini_visium, bin_method = 'rank',
-                    calc_hub = T, hub_min_int = 5,
-                    spatial_network_name = 'Delaunay_network')
+ranktest <- binSpect(
+    mini_visium,
+    bin_method = 'rank',
+    calc_hub = T,
+    hub_min_int = 5,
+    spatial_network_name = "Delaunay_network"
+)
 
 
 # 7. spatial co-expression ####
@@ -282,12 +296,12 @@ visium_test = loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/Vis
 
 spatPlot2D(visium_test,
            show_image = T,
-           image_name = 'he',
+           image_name = 'image',
            cell_color = 'custom_leiden')
 
 spatDimPlot(gobject = visium_test,
             show_image = TRUE,
-            image_name = 'he',
+            image_name = 'image',
             cell_color = 'leiden_clus',
             dim_point_size = 2,
             spat_point_size = 2.5)
