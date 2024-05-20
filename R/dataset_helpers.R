@@ -280,22 +280,22 @@ getSpatialDataset = function(dataset = c('ST_OB1',
 
 #' @title listSODBDatasetNames
 #' @name listSODBDatasetNames
-#' @param cateogry name of category for which dataset names will be listed. 
+#' @param cateogry name of category for which dataset names will be listed.
 #' @param env_name Python environment within which pysodb is installed.
 #' If it is not already installed, the user
 #' will be prompted to install `pysodb`
 #' DEFAULT: "giotto_env"
 #' @details Returns a vector containing the names of datasets associated with
 #' the provided `category`.
-#' @export 
+#' @export
 listSODBDatasetNames <- function(category = c("All",
-                                              "Spatial Transcriptomics", 
+                                              "Spatial Transcriptomics",
                                               "Spatial Proteomics",
                                               "Spatial Metabolomics",
                                               "Spatial Genomics",
                                               "Spatial MultiOmics"),
                                  env_name = "giotto_env"){
-  
+
   pysodb_installed = Giotto::checkPythonPackage(package_name = "pysdob",
                                                 env_to_use = env_name)
 
@@ -305,7 +305,7 @@ listSODBDatasetNames <- function(category = c("All",
   }
 
   sel_category = match.arg(arg = category, choices = c( "All",
-                                                        "Spatial Transcriptomics", 
+                                                        "Spatial Transcriptomics",
                                                         "Spatial Proteomics",
                                                         "Spatial Metabolomics",
                                                         "Spatial Genomics",
@@ -324,21 +324,21 @@ listSODBDatasetNames <- function(category = c("All",
 
 #' @title listSODBDatasetExperimentNames
 #' @name listSODBDatasetExperimentNames
-#' @param dataset_name name of dataset for which experiment names will be listed. 
+#' @param dataset_name name of dataset for which experiment names will be listed.
 #'        Must exist within the SODB.
 #' @param env_name Python environment within which pysodb is installed.
 #' If it is not already installed, the user
 #' will be prompted to install `pysodb`
 #' DEFAULT: "giotto_env"
-#' @details 
+#' @details
 #' Returns a vector containing the names of experiments associated with
-#' the provided `dataset_name`. 
-#' 
+#' the provided `dataset_name`.
+#'
 #' Run \preformatted{listSODBDatasetNames()} to find names of SODB datasets.
-#' @export 
+#' @export
 listSODBDatasetExperimentNames <- function(dataset_name = NULL,
                                            env_name = "giotto_env"){
-  
+
   pysodb_installed = Giotto::checkPythonPackage(package_name = "pysdob",
                                                 env_to_use = env_name)
 
@@ -348,8 +348,8 @@ listSODBDatasetExperimentNames <- function(dataset_name = NULL,
   }
 
   if(is.null(dataset_name)) {
-    stop(GiottoUtils::wrap_txt("A dataset name must be provided. 
-                               Run `listSODBDatasetNames()` for dataset names.", 
+    stop(GiottoUtils::wrap_txt("A dataset name must be provided.
+                               Run `listSODBDatasetNames()` for dataset names.",
                                errWidth = TRUE))
   }
   # Import interface_sodb, a python module for importing data from SODB
@@ -365,7 +365,7 @@ listSODBDatasetExperimentNames <- function(dataset_name = NULL,
 
 #' @title getSODBDataset
 #' @name getSODBDataset
-#' @param dataset_name name of dataset to pull from the SODB. 
+#' @param dataset_name name of dataset to pull from the SODB.
 #'        Must exist within the SODB.
 #' @param experiment_name name of one experiment associated with `dataset_name`
 #'        By default, the first experiment will be used.
@@ -383,35 +383,35 @@ listSODBDatasetExperimentNames <- function(dataset_name = NULL,
 #' Run \preformatted{listSODBDatasetNames()} to find names of SODB datasets.
 #' Run \preformatted{listSODBDatasetExperimentNames()} to find names of
 #' experiments associate with a provided dataset.
-#' 
-#' This function will not run if pysodb is not installed in 
+#'
+#' This function will not run if pysodb is not installed in
 #' the active conda environment. It will prompt the user to install
 #' pysodb automatically if it is not detected.
-#' 
+#'
 #' *Note that manual installation is more stable.*
-#' To install manually within the giotto environment, follow the steps below: 
-#' 
-#' 1. Run \preformatted{checkGiottoEnvironment()} in R to find 
+#' To install manually within the giotto environment, follow the steps below:
+#'
+#' 1. Run \preformatted{checkGiottoEnvironment()} in R to find
 #' the installation location of the Giotto conda environment.
-#' 
+#'
 #' 2. Open a terminal.
-#' 
+#'
 #' 3. Clone the source code and change into the pysodb directory.
-#' 
+#'
 #' \preformatted{
 #'   git clone https://github.com/TencentAILabHealthcare/pysodb.git
 #'   cd pysodb
 #' }
-#' 
+#'
 #' 4. Activate the giotto environment.
-#' 
+#'
 #' \preformatted{conda activate your/path/to/giotto_env}
-#' 
+#'
 #' 5. Install pysodb as a dependency or third-party package with pip:
-#' 
+#'
 #' \preformatted{pip install .}
-#' 
-#' @examples 
+#'
+#' @examples
 #' \dontrun{
 #'
 #' sodb_dataset_names = listSODBDatasetNames()
@@ -436,7 +436,7 @@ getSODBDataset <- function(dataset_name = NULL,
   }
   if(is.null(dataset_name)) {
     stop(GiottoUtils::wrap_txt("A dataset name must be provided.
-                               Run `listSODBDatasetNames()` for dataset names.", 
+                               Run `listSODBDatasetNames()` for dataset names.",
                                errWidth = TRUE))
   }
   # Import interface_sodb, a python module for importing data from SODB
@@ -456,7 +456,7 @@ getSODBDataset <- function(dataset_name = NULL,
   check_SODB_adata(dataset_name = dataset_name,
                    adata = sodb_adata,
                    experiment_name = experiment_name)
-  
+
   sodb_adata$write_h5ad("./SODB_dataset_for Giotto.h5ad")
 
   gobject = Giotto::anndataToGiotto(anndata_path = "./SODB_dataset_for Giotto.h5ad")
