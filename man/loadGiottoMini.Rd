@@ -6,13 +6,19 @@
 \usage{
 loadGiottoMini(
   dataset = c("visium", "seqfish", "starmap", "vizgen", "cosmx", "spatialgenomics"),
-  python_path = NULL
+  python_path = NULL,
+  init_gobject = TRUE,
+  ...
 )
 }
 \arguments{
 \item{dataset}{mini dataset giotto object to load}
 
 \item{python_path}{pythan path to use}
+
+\item{init_gobject}{logical. Whether to initialize gobject on load}
+
+\item{\dots}{additional params to pass to `GiottoClass::loadGiotto()`}
 }
 \description{
 This function will automatically load one of the existing mini

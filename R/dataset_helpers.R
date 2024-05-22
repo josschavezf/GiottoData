@@ -1,7 +1,26 @@
+
+
+# list of available mini gobjects
+# Each entry is named by the dataset it points to.
+# Entries contain filepath terms to get to where the data exists.
+mini_gobject_manifest = list(
+    'visium' = list("Visium", "VisiumObject"),
+    'vizgen' = list("Vizgen", "VizgenObject"),
+    'cosmx' = list("CosMx", "CosMxObject"),
+    'seqfish' = list("seqfish", "seqfishObject"),
+    'starmap' = list("3D_starmap", "3DStarmapObject"),
+    'spatialgenomics' = list("SpatialGenomics", "SpatialGenomicsObject")
+)
+
+
+
+
 #' @title loadGiottoMini
 #' @name loadGiottoMini
 #' @param dataset mini dataset giotto object to load
 #' @param python_path pythan path to use
+#' @param init_gobject logical. Whether to initialize gobject on load
+#' @param \dots additional params to pass to `GiottoClass::loadGiotto()`
 #' @description This function will automatically load one of the existing mini
 #' giotto objects. These are processed giotto objects that can be used to test
 #' Giotto functions and run examples. If no python path is provided it will try
@@ -17,47 +36,52 @@
 #' Instructions, such as for saving plots, can be changed
 #' using the \code{\link{changeGiottoInstructions}}
 #' @export
-loadGiottoMini = function(dataset = c('visium', 'seqfish', 'starmap', 'vizgen', 'cosmx', 'spatialgenomics'),
-                          python_path = NULL) {
+loadGiottoMini = function(
+        dataset = c(
+            'visium',
+            'seqfish',
+            'starmap',
+            'vizgen',
+            'cosmx',
+            'spatialgenomics'
+        ),
+        python_path = NULL,
+        init_gobject = TRUE,
+        ...
+) {
+    dataset = match.arg(dataset, choices = c(
+        names(mini_gobject_manifest)
+    ))
 
+    load_fun <- function(x) {
+        GiottoClass::loadGiotto(
+            path_to_folder = x,
+            python_path = python_path,
+            reconnect_giottoImage = FALSE,
+            init_gobject = init_gobject,
+            ...
+        )
+    }
 
-  dataset = match.arg(dataset, choices = c('visium', 'seqfish', 'starmap', 'vizgen', 'cosmx', 'spatialgenomics'))
+    # use libdir since this function is user-facing
+    path <- do.call(gdata_dataset_libdir, mini_gobject_manifest[[dataset]])
+    mini_gobject <- load_fun(path)
 
-  mini_gobject = switch(
-    dataset,
-    'visium' = loadGiotto(path_to_folder = system.file('/Mini_datasets/Visium/VisiumObject/', package = 'GiottoData'),
-                          python_path = python_path,
-                          reconnect_giottoImage = FALSE),
-    'vizgen' = loadGiotto(path_to_folder = system.file('/Mini_datasets/Vizgen/VizgenObject/', package = 'GiottoData'),
-                          python_path = python_path,
-                          reconnect_giottoImage = FALSE),
-    'cosmx' = loadGiotto(path_to_folder = system.file('/Mini_datasets/CosMx/CosMxObject/', package = 'GiottoData'),
-                         python_path = python_path,
-                         reconnect_giottoImage = FALSE),
-    'seqfish' = loadGiotto(path_to_folder = system.file('/Mini_datasets/seqfish/seqfishObject/', package = 'GiottoData'),
-                           python_path = python_path,
-                           reconnect_giottoImage = FALSE),
-    #   {
-    #   wrap_msg('To be implemented \n')
-    #   return(invisible(NULL)) # exit early
-    # },
-    'starmap' = loadGiotto(path_to_folder = system.file('/Mini_datasets/3D_starmap/3DStarmapObject/', package = 'GiottoData'),
-                           python_path = python_path),
-    'spatialgenomics' = loadGiotto(path_to_folder = system.file('/Mini_datasets/SpatialGenomics/SpatialGenomicsObject/', package = 'GiottoData'),
-                                   python_path = python_path)
-  )
+    # 1. change default instructions
+    # Only mini object-specific instructions should be updated here. The python
+    # path update was taken care of inside of `loadGiotto()`
+    mini_gobject = changeGiottoInstructions(
+        gobject = mini_gobject,
+        params = c('show_plot', 'return_plot', 'save_plot', 'save_dir'),
+        new_values = c(TRUE, FALSE, FALSE, NA),
+        init_gobject = init_gobject
+    )
 
-
-  # 1. change default instructions
-  # Only mini object-specific instructions should be updated here. The python
-  # path update was taken care of inside of `loadGiotto()`
-  mini_gobject = changeGiottoInstructions(gobject = mini_gobject,
-                                          params = c('show_plot', 'return_plot', 'save_plot', 'save_dir'),
-                                          new_values = c(TRUE, FALSE, FALSE, NA))
-
-  return(mini_gobject)
-
+    return(mini_gobject)
 }
+
+
+
 
 
 #' @title getSpatialDataset

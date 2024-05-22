@@ -8,7 +8,7 @@
 #' is available (see \code{\link{listSubObjectMini}})
 #' @export
 loadSubObjectMini = function(x, idx = 1L) {
-  
+
   # declare data.table variables
   type = index = path = NULL
 
@@ -22,20 +22,11 @@ loadSubObjectMini = function(x, idx = 1L) {
     load_data = GiottoClass::vect(load_data)
   }
 
-  if(x == 'giottoLargeImage') {
+  if(x %in% c('giottoImage', 'giottoLargeImage')) {
     original_path = load_data@file_path
-    new_path = gsub(pattern = '.*[/]GiottoData/', replacement = '', x = original_path)
-    new_path = paste0(gDataDir(), new_path)
-    load_data = GiottoClass::reconnect_giottoLargeImage(giottoLargeImage = load_data,
-                                                        image_path = new_path)
-  }
-
-  if(x == 'giottoImage') {
-    original_path = load_data@file_path
-    new_path = gsub(pattern = '.*[/]GiottoData/', replacement = '', x = original_path)
-    new_path = paste0(gDataDir(), new_path)
-    load_data = GiottoClass::reconnect_giottoImage_MG(giottoImage = load_data,
-                                                      image_path = new_path)
+    new_path = gsub(pattern = '.*[/]GiottoData/|.*[/]GiottoData/inst/', replacement = '', x = original_path)
+    new_path = paste0(gdata_libdir(), new_path)
+    load_data = GiottoClass::reconnect(load_data, mage_path = new_path)
   }
 
   return(load_data)
@@ -52,7 +43,7 @@ loadSubObjectMini = function(x, idx = 1L) {
 #' @param x subobject type (NULL lists all subobject types)
 #' @export
 listSubObjectMini = function(x = NULL) {
-  
+
   # declare data.table variables
   path = type = NULL
 
@@ -76,11 +67,11 @@ listSubObjectMini = function(x = NULL) {
 #' for the external version which provides those functions.
 #' @keywords internal
 list_subobject_mini = function() {
-  
+
   # declare data.table variables
   path = type = NULL
 
-  miniobj_path = paste0(gDataDir(), '/Mini_objects/subobjects')
+  miniobj_path = paste0(gdata_libdir(), '/Mini_objects/subobjects')
 
   avail_obj = list.files(path = miniobj_path, full.names = TRUE, recursive = TRUE)
   avail_obj_dt = data.table::data.table(file = basename(avail_obj), path = avail_obj)
