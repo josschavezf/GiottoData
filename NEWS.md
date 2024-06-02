@@ -1,4 +1,9 @@
 
+# GiottoData 0.2.13 (2024/05/31)
+
+## Changes
+- Mini Visium rebuilt for GiottoClass 0.3.2, this time as a subset of the full mouse brain tutorial
+
 # GiottoData 0.2.12.0 (2024/05/22)
 
 ## Bug fixes
