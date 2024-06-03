@@ -1,17 +1,9 @@
 ## MINI VISIUM script and dataset preparation ##
 
-# devtools::load_all('/Users/rubendries/r_packages/Giotto/')
-# devtools::load_all('/Users/rubendries/Packages/R_Packages/Giotto/')
-# devtools::load_all()
-
-#remotes::install_github("drieslab/Giotto@suite_dev")
 library(Giotto)
+library(GiottoData)
 
-#remotes::install_github("drieslab/GiottoData")
-library(GiottoData) # devtools::load_all()
 
-library(terra)
-library(data.table)
 
 # 0. preparation ####
 # ----------------- #
@@ -109,7 +101,6 @@ spatInSituPlotPoints(
   image_name = "alignment"
 )
 
-mini_visium@images$alignment@raster_object
 
 # 2 process ####
 # ------------ #
@@ -133,11 +124,6 @@ mini_visium <- addStatistics(gobject = mini_visium)
 spatPlot2D(gobject = mini_visium,
            show_image = TRUE,
            image_name = 'image',
-           point_alpha = 0.7)
-
-spatPlot2D(gobject = mini_visium,
-           show_image = TRUE,
-           image_name = 'image',
            background_color = "black",
            cell_color_gradient = c("cyan", "blue", "black", "orange", "yellow"),
            point_alpha = 0.7,
@@ -150,7 +136,7 @@ spatPlot2D(gobject = mini_visium,
 mini_visium <- calculateHVF(gobject = mini_visium)
 
 ## run PCA on expression values (default)
-mini_visium <- runPCA(gobject = mini_visium)
+mini_visium <- runPCA(gobject = mini_visium, feats_to_use = NULL)
 screePlot(mini_visium, ncp = 30)
 
 plotPCA(gobject = mini_visium)
@@ -272,18 +258,83 @@ spatPlot2D(mini_visium,
            cell_color = 'custom_leiden')
 
 
-# 9. save Giotto object ####
+
+
+# 9. DWLS #
+# ------- #
+
+temp <- tempdir()
+getSpatialDataset(dataset = 'scRNA_mouse_brain', directory = temp)
+sc_expression = paste0(temp, "/brain_sc_expression_matrix.txt.gz")
+sc_metadata = paste0(temp,"/brain_sc_metadata.csv")
+giotto_SC = createGiottoObject(expression = sc_expression)
+
+# fix cell_IDs in metadata to add
+sc_metadata_dt <- data.table::fread(sc_metadata)[, .SD, .SDcols = !"V1"] # ignore extra V1 col that duplicates cell_ID info
+# last dash is replaced with "." character
+sc_metadata_dt[, cell_ID := gsub(pattern = "(-)(?!.*-)", replacement = ".", cell_ID,  perl = T)]
+# add "X" character to beginning
+sc_metadata_dt[, cell_ID := paste0("X", cell_ID)]
+
+giotto_SC = addCellMetadata(
+    giotto_SC,
+    new_metadata = sc_metadata_dt,
+    by_column = TRUE,
+    column_cell_ID = "cell_ID"
+)
+giotto_SC = normalizeGiotto(giotto_SC)
+
+# keep only "Astrocytes", "Neurons", "PeripheralGlia", "Oligos" since they
+# are the only ones represented strongly in this region
+
+keep_cids <- pDataDT(giotto_SC)[Class %in% c("Astrocytes", "Neurons", "PeripheralGlia", "Oligos"), cell_ID] |> as.vector()
+keep_fids <- featIDs(mini_visium)
+
+giotto_SC_mini <- subsetGiotto(giotto_SC, cell_ids = keep_cids, feat_ids = keep_fids)
+
+# make PAGE matrix from single cell dataset
+markers_scran = findMarkers_one_vs_all(
+    gobject = giotto_SC_mini,
+    method = "scran",
+    expression_values = "normalized",
+    cluster_column = "Class",
+    min_feats = 3
+)
+
+top_markers = markers_scran[, head(.SD, 10), by = "cluster"]
+
+
+DWLS_matrix = Giotto::makeSignMatrixDWLSfromMatrix(
+    matrix = getExpression(
+        giotto_SC_mini,
+        values = "normalized",
+        output = "matrix"
+    ),
+    cell_type_vector = pDataDT(giotto_SC_mini)$Class,
+    sign_gene = top_markers$feats
+)
+
+mini_visium <- runDWLSDeconv(gobject = mini_visium,
+                              sign_matrix = DWLS_matrix)
+
+
+# Plot DWLS deconvolution result with Pie plots
+spatDeconvPlot(mini_visium,
+               show_image = T,
+               radius = 50,
+               save_param = list(save_name = "spat_DWLS_pie_plot"))
+
+
+
+# 10. save Giotto object ####
 # ------------------------- #
 format(object.size(mini_visium), units = 'Mb')
 
-# you need to use your local GiottoData repo
-#giottodata_repo = '/Users/rubendries/Packages/R_Packages/GiottoData/inst/Mini_datasets/'
-#giottodata_repo = '/Users/rubendries/r_packages/GiottoData//inst/Mini_datasets/'
+save_location <- GiottoData:::gdata_dataset_devdir()
 
 saveGiotto(mini_visium,
            foldername = 'VisiumObject',
-           #dir = paste0(system.file(package = 'GiottoData'),'/', 'Mini_datasets/Vizgen/'),
-           dir = paste0(giottodata_repo, '/', 'Visium/'),
+           dir = paste0(save_location, '/', 'Visium/'),
            overwrite = TRUE)
 
 pDataDT(mini_visium)
@@ -307,119 +358,119 @@ spatDimPlot(gobject = visium_test,
             spat_point_size = 2.5)
 
 
-
-# 10. build from scratch ####
-# -------------------------- #
-
-
-# 10.1 get expression data as matrix
-list_expression(mini_visium)
-raw_matrix = getExpression(mini_visium, values = 'raw', output = 'matrix')
-normalized_matrix = getExpression(mini_visium, values = 'normalized', output = 'matrix')
-scaled_matrix = getExpression(mini_visium, values = 'scaled', output = 'matrix')
-
-# 10.2 get spatial location data as a 3-column data.table
-list_spatial_locations(mini_visium)
-spatial_locations = getSpatialLocations(mini_visium, name = 'raw', output = 'data.table')
-
-# 10.3 get cell and feature metadata as data.tables
-list_cell_metadata(mini_visium)
-cell_metadata = getCellMetadata(mini_visium, output = 'data.table')
-list_feat_metadata(mini_visium)
-feat_metadata = getFeatureMetadata(mini_visium, output = 'data.table')
-
-
-# 10.4 dimension reduction as matrix
-list_dim_reductions(mini_visium)
-pca_dim = getDimReduction(mini_visium, reduction_method = 'pca', name = 'pca', output = 'matrix')
-umap_dim = getDimReduction(mini_visium, reduction_method = 'umap', name = 'umap', output = 'matrix')
-tsne_dim = getDimReduction(mini_visium, reduction_method = 'tsne', name = 'tsne', output = 'matrix')
-
-# 10.5 get nearest networks as data.table
-list_nearest_networks(mini_visium)
-sNN_network = getNearestNetwork(mini_visium, nn_type = 'sNN', name = 'sNN.pca', output = 'data.table')
-sNN_network = sNN_network[,.(from, to, distance)]
-
-# 10.6 large images
-list_images(mini_visium)
-images = getGiottoImage(mini_visium, image_type = 'largeImage', name = 'image')
-plot(images)
-
-
-## 10.1 create spatialExperiment ####
-
-speg = giottoToSpatialExperiment(giottoObj = mini_visium)
-
-class(speg[[1]])
-
-speg_rna = speg[[1]]
-
-SummarizedExperiment::assayNames(speg_rna)
-
-speg_rna@NAMES
-
-speg_rna@assays@data$normalized_rna_cell
-
-
-
-?SpatialExperiment::SpatialExperiment()
-
-# remake
-mini_visium_remake <- createGiottoObject(expression = list('cell' =
-                                                             list('rna' =
-                                                                    list('raw' = raw_matrix,
-                                                                         'normalized' = normalized_matrix,
-                                                                         'scaled' = scaled_matrix))),
-                                         spatial_locs = list('cell' =
-                                                               list('raw' = spatial_locations)),
-                                         instructions = instrs)
-
-
-
-# remake
-mini_visium_remake <- createGiottoObject(expression = list('cell' =
-                                                             list('rna' =
-                                                                    list('raw' = raw_matrix,
-                                                                         'normalized' = normalized_matrix,
-                                                                         'scaled' = scaled_matrix))),
-                                         instructions = instrs)
-
-
-# option 1: create S4 object + set function
-# option 2: read alternative input --> S4 function + set function
-# option 3: createGiottoObject using #1 or #2
-
-mini_visium_remake = setSpatialLocations(gobject = mini_visium_remake, spatlocs = spatial_locations)
-
-mini_visium_remake = set_cell_metadata(gobject = mini_visium_remake,
-                                       metadata = cell_metadata,
-                                       spat_unit = 'cell', feat_type = 'rna')
-
-mini_visium_remake = set_feature_metadata(gobject = mini_visium_remake,
-                                       metadata = feat_metadata,
-                                       spat_unit = 'cell', feat_type = 'rna')
-
-pca_obj = create_dim_obj(name = 'pca', reduction = 'cells', reduction_method = 'pca',
-                         coordinates = pca_dim)
-umap_obj = create_dim_obj(name = 'umap', reduction = 'cells', reduction_method = 'umap',
-                         coordinates = umap_dim)
-tsne_obj = create_dim_obj(name = 'tsne', reduction = 'cells', reduction_method = 'tsne',
-                         coordinates = tsne_dim)
-mini_visium_remake = setDimReduction(gobject = mini_visium_remake, dimObject = pca_obj)
-mini_visium_remake = setDimReduction(gobject = mini_visium_remake, dimObject = umap_obj)
-mini_visium_remake = setDimReduction(gobject = mini_visium_remake, dimObject = tsne_obj)
-
-mini_visium_remake = setNearestNetwork(gobject = mini_visium_remake, nn_network = sNN_network)
-
-spatDimPlot(gobject = mini_visium_remake,
-            show_NN_network = T,
-            show_image = F,
-            largeImage_name = 'image',
-            cell_color = 'leiden_clus',
-            dim_point_size = 2, spat_point_size = 2.5)
-
-str(mini_visium, 2)
-
-
+#
+# # 10. build from scratch ####
+# # -------------------------- #
+#
+#
+# # 10.1 get expression data as matrix
+# list_expression(mini_visium)
+# raw_matrix = getExpression(mini_visium, values = 'raw', output = 'matrix')
+# normalized_matrix = getExpression(mini_visium, values = 'normalized', output = 'matrix')
+# scaled_matrix = getExpression(mini_visium, values = 'scaled', output = 'matrix')
+#
+# # 10.2 get spatial location data as a 3-column data.table
+# list_spatial_locations(mini_visium)
+# spatial_locations = getSpatialLocations(mini_visium, name = 'raw', output = 'data.table')
+#
+# # 10.3 get cell and feature metadata as data.tables
+# list_cell_metadata(mini_visium)
+# cell_metadata = getCellMetadata(mini_visium, output = 'data.table')
+# list_feat_metadata(mini_visium)
+# feat_metadata = getFeatureMetadata(mini_visium, output = 'data.table')
+#
+#
+# # 10.4 dimension reduction as matrix
+# list_dim_reductions(mini_visium)
+# pca_dim = getDimReduction(mini_visium, reduction_method = 'pca', name = 'pca', output = 'matrix')
+# umap_dim = getDimReduction(mini_visium, reduction_method = 'umap', name = 'umap', output = 'matrix')
+# tsne_dim = getDimReduction(mini_visium, reduction_method = 'tsne', name = 'tsne', output = 'matrix')
+#
+# # 10.5 get nearest networks as data.table
+# list_nearest_networks(mini_visium)
+# sNN_network = getNearestNetwork(mini_visium, nn_type = 'sNN', name = 'sNN.pca', output = 'data.table')
+# sNN_network = sNN_network[,.(from, to, distance)]
+#
+# # 10.6 large images
+# list_images(mini_visium)
+# images = getGiottoImage(mini_visium, image_type = 'largeImage', name = 'image')
+# plot(images)
+#
+#
+# ## 10.1 create spatialExperiment ####
+#
+# speg = giottoToSpatialExperiment(giottoObj = mini_visium)
+#
+# class(speg[[1]])
+#
+# speg_rna = speg[[1]]
+#
+# SummarizedExperiment::assayNames(speg_rna)
+#
+# speg_rna@NAMES
+#
+# speg_rna@assays@data$normalized_rna_cell
+#
+#
+#
+# ?SpatialExperiment::SpatialExperiment()
+#
+# # remake
+# mini_visium_remake <- createGiottoObject(expression = list('cell' =
+#                                                              list('rna' =
+#                                                                     list('raw' = raw_matrix,
+#                                                                          'normalized' = normalized_matrix,
+#                                                                          'scaled' = scaled_matrix))),
+#                                          spatial_locs = list('cell' =
+#                                                                list('raw' = spatial_locations)),
+#                                          instructions = instrs)
+#
+#
+#
+# # remake
+# mini_visium_remake <- createGiottoObject(expression = list('cell' =
+#                                                              list('rna' =
+#                                                                     list('raw' = raw_matrix,
+#                                                                          'normalized' = normalized_matrix,
+#                                                                          'scaled' = scaled_matrix))),
+#                                          instructions = instrs)
+#
+#
+# # option 1: create S4 object + set function
+# # option 2: read alternative input --> S4 function + set function
+# # option 3: createGiottoObject using #1 or #2
+#
+# mini_visium_remake = setSpatialLocations(gobject = mini_visium_remake, spatlocs = spatial_locations)
+#
+# mini_visium_remake = set_cell_metadata(gobject = mini_visium_remake,
+#                                        metadata = cell_metadata,
+#                                        spat_unit = 'cell', feat_type = 'rna')
+#
+# mini_visium_remake = set_feature_metadata(gobject = mini_visium_remake,
+#                                        metadata = feat_metadata,
+#                                        spat_unit = 'cell', feat_type = 'rna')
+#
+# pca_obj = create_dim_obj(name = 'pca', reduction = 'cells', reduction_method = 'pca',
+#                          coordinates = pca_dim)
+# umap_obj = create_dim_obj(name = 'umap', reduction = 'cells', reduction_method = 'umap',
+#                          coordinates = umap_dim)
+# tsne_obj = create_dim_obj(name = 'tsne', reduction = 'cells', reduction_method = 'tsne',
+#                          coordinates = tsne_dim)
+# mini_visium_remake = setDimReduction(gobject = mini_visium_remake, dimObject = pca_obj)
+# mini_visium_remake = setDimReduction(gobject = mini_visium_remake, dimObject = umap_obj)
+# mini_visium_remake = setDimReduction(gobject = mini_visium_remake, dimObject = tsne_obj)
+#
+# mini_visium_remake = setNearestNetwork(gobject = mini_visium_remake, nn_network = sNN_network)
+#
+# spatDimPlot(gobject = mini_visium_remake,
+#             show_NN_network = T,
+#             show_image = F,
+#             largeImage_name = 'image',
+#             cell_color = 'leiden_clus',
+#             dim_point_size = 2, spat_point_size = 2.5)
+#
+# str(mini_visium, 2)
+#
+#
 
 
