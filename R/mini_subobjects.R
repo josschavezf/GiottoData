@@ -26,7 +26,7 @@ loadSubObjectMini = function(x, idx = 1L) {
     original_path = load_data@file_path
     new_path = gsub(pattern = '.*[/]GiottoData/|.*[/]GiottoData/inst/', replacement = '', x = original_path)
     new_path = paste0(gdata_libdir(), new_path)
-    load_data = GiottoClass::reconnect(load_data, mage_path = new_path)
+    load_data = GiottoClass::reconnect(load_data, image_path = new_path)
   }
 
   return(load_data)
