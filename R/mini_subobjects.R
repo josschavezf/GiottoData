@@ -25,7 +25,7 @@ loadSubObjectMini = function(x, idx = 1L) {
   if(x %in% c('giottoImage', 'giottoLargeImage')) {
     original_path = load_data@file_path
     new_path = gsub(pattern = '.*[/]GiottoData/|.*[/]GiottoData/inst/', replacement = '', x = original_path)
-    new_path = paste0(gdata_libdir(), new_path)
+    new_path = file.path(gdata_libdir(), new_path)
     load_data = GiottoClass::reconnect(load_data, path = new_path)
   }
 
