@@ -237,11 +237,11 @@ listSODBDatasetNames <- function(category = c("All",
                                               "Spatial MultiOmics"),
                                  env_name = "giotto_env"){
 
-  pysodb_installed = Giotto::checkPythonPackage(package_name = "pysdob",
+  pysodb_installed = GiottoClass:::checkPythonPackage(package_name = "pysdob",
                                                 env_to_use = env_name)
 
   if(!pysodb_installed) {
-    Giotto::checkPythonPackage(github_pacakge_url = "git+https://github.com/TencentAILabHealthcare/pysodb.git",
+      GiottoClass:::checkPythonPackage(github_package_url = "git+https://github.com/TencentAILabHealthcare/pysodb.git",
                                env_to_use = env_name)
   }
 
@@ -280,11 +280,11 @@ listSODBDatasetNames <- function(category = c("All",
 listSODBDatasetExperimentNames <- function(dataset_name = NULL,
                                            env_name = "giotto_env"){
 
-  pysodb_installed = Giotto::checkPythonPackage(package_name = "pysdob",
+  pysodb_installed = GiottoClass:::checkPythonPackage(package_name = "pysdob",
                                                 env_to_use = env_name)
 
   if(!pysodb_installed) {
-    Giotto::checkPythonPackage(github_pacakge_url = "git+https://github.com/TencentAILabHealthcare/pysodb.git",
+      GiottoClass:::checkPythonPackage(github_package_url = "git+https://github.com/TencentAILabHealthcare/pysodb.git",
                                env_to_use = env_name)
   }
 
@@ -367,10 +367,10 @@ listSODBDatasetExperimentNames <- function(dataset_name = NULL,
 getSODBDataset <- function(dataset_name = NULL,
                            experiment_name = "default",
                            env_name = "giotto_env"){
-  pysodb_installed = Giotto::checkPythonPackage(package = "pysodb",
+  pysodb_installed = GiottoClass:::checkPythonPackage(package = "pysodb",
                                                 env_to_use = env_name)
   if (!pysodb_installed){
-    Giotto::checkPythonPackage(github_pacakge_url = "git+https://github.com/TencentAILabHealthcare/pysodb.git",
+      GiottoClass:::checkPythonPackage(github_package_url = "git+https://github.com/TencentAILabHealthcare/pysodb.git",
                                env_to_use = env_name)
     # not returning value to variable because this
     # will crash downstream if unsuccessful.
