@@ -1,3 +1,10 @@
+# GiottoData 0.2.14 (2024/07/24)
+
+## Bug fixes
+- fix `loadSubObjectMini()` loading of image subobjects. [#60](https://github.com/drieslab/GiottoData/issues/60)
+
+## Changes
+- code reorganization of mini subobject and mini gobject related functions
 
 # GiottoData 0.2.13 (2024/05/31)
 

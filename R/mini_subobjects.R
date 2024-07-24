@@ -25,8 +25,8 @@ loadSubObjectMini = function(x, idx = 1L) {
   if(x %in% c('giottoImage', 'giottoLargeImage')) {
     original_path = load_data@file_path
     new_path = gsub(pattern = '.*[/]GiottoData/|.*[/]GiottoData/inst/', replacement = '', x = original_path)
-    new_path = paste0(gdata_libdir(), new_path)
-    load_data = GiottoClass::reconnect(load_data, mage_path = new_path)
+    new_path = file.path(gdata_libdir(), new_path)
+    load_data = GiottoClass::reconnect(load_data, path = new_path)
   }
 
   return(load_data)
@@ -85,5 +85,22 @@ list_subobject_mini = function() {
 }
 
 
+
+#' @name generate_mini_subobjects
+#' @title Generate mini subobjects
+#' @description
+#' Generate the GiottoData mini subobjects based on Mini_objects_script.R
+#' in `/inst/Mini_objects/` subdirectory.
+#' @returns NULL invisibly
+#' @export
+generate_mini_subobjects <- function() {
+
+    script_path <- file.path(
+        gdata_devdir(), "inst", "Mini_objects", "Mini_objects_script.R"
+    )
+
+    source(script_path, echo = TRUE)
+    return(invisible())
+}
 
 

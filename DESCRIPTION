@@ -1,7 +1,7 @@
 Package: GiottoData
 Type: Package
 Title: Datasets for Giotto
-Version: 0.2.13
+Version: 0.2.14
 Authors@R: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
 		 role = c("aut", "cre"))
@@ -32,4 +32,4 @@ Remotes:
     drieslab/GiottoClass,
     drieslab/GiottoUtils,
     drieslab/Giotto
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
