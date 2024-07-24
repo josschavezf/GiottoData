@@ -221,7 +221,7 @@ getSpatialDataset = function(dataset = c('ST_OB1',
 
 #' @title listSODBDatasetNames
 #' @name listSODBDatasetNames
-#' @param cateogry name of category for which dataset names will be listed.
+#' @param category name of category for which dataset names will be listed.
 #' @param env_name Python environment within which pysodb is installed.
 #' If it is not already installed, the user
 #' will be prompted to install `pysodb`
