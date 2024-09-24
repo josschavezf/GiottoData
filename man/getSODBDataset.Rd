@@ -66,12 +66,15 @@ the installation location of the Giotto conda environment.
 \examples{
 \dontrun{
 
-sodb_dataset_names = listSODBDatasetNames()
-desired_dataset = sodb_dataset_names[[15]] # Arbitrary
+sodb_dataset_names <- listSODBDatasetNames()
+desired_dataset <- sodb_dataset_names[[15]] # Arbitrary
 
-dataset_experiment_names = listSODBDatasetExperimentNames(dataset_name = desired_dataset)
-desired_experiment = dataset_experiment_names[[1]] # Arbitrary
+dataset_experiment_names <- listSODBDatasetExperimentNames(dataset_name = desired_dataset)
+desired_experiment <- dataset_experiment_names[[1]] # Arbitrary
 
-gobject = getSODBDataset(dataset_name = desired_dataset,
-                         experiment_name = desired_experiment)}
+gobject <- getSODBDataset(
+    dataset_name = desired_dataset,
+    experiment_name = desired_experiment
+)
+}
 }
