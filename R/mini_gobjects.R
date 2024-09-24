@@ -1,15 +1,13 @@
-
-
 # list of available mini gobjects
 # Each entry is named by the dataset it points to.
 # Entries contain filepath terms to get to where the data exists.
-mini_gobject_manifest = list(
-    'visium' = list("Visium", "VisiumObject"),
-    'vizgen' = list("Vizgen", "VizgenObject"),
-    'cosmx' = list("CosMx", "CosMxObject"),
-    'seqfish' = list("seqfish", "seqfishObject"),
-    'starmap' = list("3D_starmap", "3DStarmapObject"),
-    'spatialgenomics' = list("SpatialGenomics", "SpatialGenomicsObject")
+mini_gobject_manifest <- list(
+    "visium" = list("Visium", "VisiumObject"),
+    "vizgen" = list("Vizgen", "VizgenObject"),
+    "cosmx" = list("CosMx", "CosMxObject"),
+    "seqfish" = list("seqfish", "seqfishObject"),
+    "starmap" = list("3D_starmap", "3DStarmapObject"),
+    "spatialgenomics" = list("SpatialGenomics", "SpatialGenomicsObject")
 )
 
 
@@ -37,22 +35,23 @@ mini_gobject_manifest = list(
 #'   \item{6. starmap}
 #' }
 #' Instructions, such as for saving plots, can be changed
-#' using the \code{\link{changeGiottoInstructions}}
+#' using the \code{\link{instructions}}
+#' @examples
+#' loadGiottoMini("visium")
+#'
 #' @export
-loadGiottoMini = function(
-        dataset = c(
-            'visium',
-            'seqfish',
-            'starmap',
-            'vizgen',
-            'cosmx',
-            'spatialgenomics'
-        ),
-        python_path = NULL,
-        init_gobject = TRUE,
-        ...
-) {
-    dataset = match.arg(dataset, choices = c(
+loadGiottoMini <- function(dataset = c(
+        "visium",
+        "seqfish",
+        "starmap",
+        "vizgen",
+        "cosmx",
+        "spatialgenomics"
+    ),
+    python_path = NULL,
+    init_gobject = TRUE,
+    ...) {
+    dataset <- match.arg(dataset, choices = c(
         names(mini_gobject_manifest)
     ))
 
@@ -73,12 +72,10 @@ loadGiottoMini = function(
     # 1. change default instructions
     # Only mini object-specific instructions should be updated here. The python
     # path update was taken care of inside of `loadGiotto()`
-    mini_gobject = changeGiottoInstructions(
+    instructions(
         gobject = mini_gobject,
-        params = c('show_plot', 'return_plot', 'save_plot', 'save_dir'),
-        new_values = c(TRUE, FALSE, FALSE, NA),
-        init_gobject = init_gobject
-    )
+        param = c("show_plot", "return_plot", "save_plot", "save_dir")
+    ) <- list(TRUE, FALSE, FALSE, NA)
 
     return(mini_gobject)
 }
