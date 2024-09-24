@@ -1,4 +1,3 @@
-
 #' @title Get GiottoData paths
 #' @name giottodata_paths
 #' @description Utility functions to get helpful filepaths within the
@@ -13,8 +12,8 @@ NULL
 #' of the package. Should not be used in contexts where package is loaded with
 #' `devtools::load_all()`
 #' @keywords internal
-gdata_libdir = function(...) {
-  file.path(system.file(package = 'GiottoData'), ...)
+gdata_libdir <- function(...) {
+    file.path(system.file(package = "GiottoData"), ...)
 }
 
 #' @describeIn giottodata_paths Get the library path to the mini
@@ -57,6 +56,6 @@ gdata_dataset_devdir <- function(...) {
 }
 
 # https://stackoverflow.com/questions/7963898/extracting-the-last-n-characters-from-a-string-in-r
-str_tail <- function(x, n){
-    substr(x, nchar(x)-n+1, nchar(x))
+str_tail <- function(x, n) {
+    substr(x, nchar(x) - n + 1, nchar(x))
 }

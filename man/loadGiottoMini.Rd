@@ -37,5 +37,9 @@ Available datasets are:
   \item{6. starmap}
 }
 Instructions, such as for saving plots, can be changed
-using the \code{\link{changeGiottoInstructions}}
+using the \code{\link{instructions}}
+}
+\examples{
+loadGiottoMini("visium")
+
 }
