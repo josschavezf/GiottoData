@@ -1,3 +1,8 @@
+# GiottoData 0.2.15
+
+## Changes
+- internal replacement of deprecated changeGiottoInstructions -> instructions
+
 # GiottoData 0.2.14 (2024/07/24)
 
 ## Bug fixes
