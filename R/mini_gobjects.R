@@ -3,6 +3,7 @@
 # Entries contain filepath terms to get to where the data exists.
 mini_gobject_manifest <- list(
     "visium" = list("Visium", "VisiumObject"),
+    "visium_multisample" = list("Visium_multisample", "VisiumObject"),
     "vizgen" = list("Vizgen", "VizgenObject"),
     "cosmx" = list("CosMx", "CosMxObject"),
     "seqfish" = list("seqfish", "seqfishObject"),
@@ -28,11 +29,12 @@ mini_gobject_manifest <- list(
 #' Available datasets are:
 #' \itemize{
 #'   \item{1. visium: mini dataset created from the mouse brain sample }
-#'   \item{2. vizgen: mini dataset created from the mouse brain sample }
-#'   \item{3. cosmx: mini dataset created from the lung12 sample }
-#'   \item{4. spatialgenomics: mini dataset created from the mouse kidney sample}
-#'   \item{5. seqfish}
-#'   \item{6. starmap}
+#'   \item{2. visium_multisample: mini dataset created from the human prostate normal and carcer samples }
+#'   \item{3. vizgen: mini dataset created from the mouse brain sample }
+#'   \item{4. cosmx: mini dataset created from the lung12 sample }
+#'   \item{5. spatialgenomics: mini dataset created from the mouse kidney sample}
+#'   \item{6. seqfish}
+#'   \item{7. starmap}
 #' }
 #' Instructions, such as for saving plots, can be changed
 #' using the \code{\link{instructions}}
@@ -42,6 +44,7 @@ mini_gobject_manifest <- list(
 #' @export
 loadGiottoMini <- function(dataset = c(
         "visium",
+        "visium_multisample",
         "seqfish",
         "starmap",
         "vizgen",
