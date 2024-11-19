@@ -1,10 +1,14 @@
 Package: GiottoData
 Type: Package
 Title: Datasets for Giotto
-Version: 0.2.15
+Version: 0.2.16
 Authors@R: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
-		 role = c("aut", "cre"))
+		 role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7650-7754")),
+	person("Jiaji", "George Chen", email = "jiajic@bu.edu",
+		 role = c("aut")),
+	person("Joselyn C.", "Chávez-Fuentes", email = "joselynchavezf@gmail.com",
+		 role = c("aut"), comment = c(ORCID = "0000-0002-4974-4591"))
 		 )
 Description: Stores information and scripts to work with, or load various
     different spatial datasets that can be used with the Giotto Suite workflow.

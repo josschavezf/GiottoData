@@ -1,3 +1,8 @@
+# GiottoData 0.2.16 (2024/11/19)
+
+## New
+- New visium_multisample mini object
+
 # GiottoData 0.2.15
 
 ## Changes
